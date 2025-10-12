@@ -1,0 +1,27 @@
+.input-wrapper {
+  margin-bottom: 1rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* .input-error {
+  border-color: #dc3545;
+} */
+
+.input-error-message {
+  color: #dc3545;
+  font-size: small;
+  margin-bottom: 900px;
+}

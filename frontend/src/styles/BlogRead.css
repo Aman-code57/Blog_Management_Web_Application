@@ -1,0 +1,65 @@
+.blog-read-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.blog-read-container h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.blog-read-container img,
+.blog-read-container video {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.blog-content {
+  font-size: 1.2em;
+  line-height: 1.6;
+}
+
+.blog-content p {
+  margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+  text-align: center;
+}
+
+.add-comment {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.post-btn {
+  font-size: 0.8em;
+  padding: 5px 10px;
+}
+.del-btns{
+  background-color: white;
+  font-size: small;
+  color: black;
+}
+
+.rep-btns{
+  background-color: white;
+  font-size: small;
+  color: black;
+}
+
+.subs-btns{
+  background-color: white;
+  font-size: small;
+  color: black;
+}
+
+.cans-btns{
+  background-color: white;
+  font-size: small;
+  color: black;
+}

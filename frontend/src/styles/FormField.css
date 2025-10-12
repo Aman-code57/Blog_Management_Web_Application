@@ -1,0 +1,16 @@
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.form-field-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.form-field-error {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}

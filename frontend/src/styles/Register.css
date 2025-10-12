@@ -1,0 +1,85 @@
+.page-container {
+  height: 100vh;
+}
+
+.register-container {
+  max-width: 600px;
+  padding: 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25%;
+  height: 450px;
+}
+
+.register-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color:rgb(53, 49, 49);
+}
+
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  gap: 8px;
+}
+
+.register-container input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+  font-size: 16px;
+  gap: 60px
+}
+
+
+
+.register-container button {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.register-container button:hover {
+  background-color: #218838;
+}
+
+/* .error {
+  color: red;
+  text-align: left !important;
+  font-size: small;
+  position: fixed;
+  top: -100px;
+  left: 0;
+  margin: 0;
+} */
+
+.register-container p {
+  text-align: center;
+  margin-top: -60px;
+}
+
+.register-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.register-container a:hover {
+  text-decoration: underline;
+}
+.register-container p{
+  color: black;
+}

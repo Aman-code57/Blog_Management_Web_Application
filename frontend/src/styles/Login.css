@@ -1,0 +1,104 @@
+.page-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: white;
+}
+
+.navbar {
+  background-color: #007bff;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  width: 97.8vw;
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.login-container {
+  max-width: 500px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25%;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-container input {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.login-container button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.login-container button:hover {
+  background-color: #0056b3;
+}
+
+/* .errored {
+  color: red;
+  text-align: center;
+  margin-top: -20px;
+} */
+
+.login-container p {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.login-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}
+.login-container p{
+
+  color: black;
+}
+
+.login-container h3 {
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: medium;
+}
+/* .error {
+  font-size: small;
+  color: red;
+  margin-bottom: 80px;
+  text-align: left;
+  margin-top: -200px;
+} */

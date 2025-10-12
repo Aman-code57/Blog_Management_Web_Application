@@ -1,0 +1,7 @@
+The specific architecture name you are following is Three-Tier Architecture (also known as Three-Layer Architecture or Multi-Tier Architecture).
+
+Why this name?
+Presentation Tier (Frontend): React SPA handling user interface, routing, and client-side logic
+Application Tier (Backend): FastAPI REST API with business logic, API endpoints, authentication, and data processing
+Data Tier (Database): SQLAlchemy ORM models and database connection layer
+This architecture provides clear separation of concerns, scalability, and maintainability by isolating the user interface, application logic, and data storage into distinct layers that communicate through well-defined interfaces (API calls).
