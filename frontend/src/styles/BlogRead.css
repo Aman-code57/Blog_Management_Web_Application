@@ -1,30 +1,3 @@
-.blog-read-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.blog-read-container h1 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
-}
-
-.blog-read-container img,
-.blog-read-container video {
-  max-width: 100%;
-  height: auto;
-  margin-bottom: 20px;
-}
-
-.blog-content {
-  font-size: 1.2em;
-  line-height: 1.6;
-}
-
-.blog-content p {
-  margin-bottom: 10px;
-}
-
 .error {
   color: red;
   text-align: center;
@@ -62,4 +35,8 @@
   background-color: white;
   font-size: small;
   color: black;
+}
+.blog-read-container h1{
+  color: rgb(20, 18, 18);
+  font-size: x-large;
 }

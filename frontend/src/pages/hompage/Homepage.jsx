@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
 import CreateBlog from "../create_blog/CreateBlog";
 import About from "../about/About";
-import Layout from "../../components/Layout";
 import { FaThumbsUp, FaComment } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import api from "../../utils/api";
 import "../../styles/Homepage.css";
+import "../../styles/Layout.css";
 
 function Home() {
   const [blogs, setBlogs] = useState([]);
@@ -19,7 +20,7 @@ function Home() {
   const [newBlogComment, setNewBlogComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     if (currentView === 'home') {
@@ -278,9 +279,39 @@ function Home() {
   };
 
   return (
-    <Layout showBackButton={viewingBlog} onBackClick={() => setViewingBlog(false)}>
-      {renderContent()}
-    </Layout>
+    <div className="layout-container homepage">
+      <nav className="navbar">
+        <h1 className="navbar-title">Blog Management</h1>
+        <div className="navbar-right">
+          {viewingBlog && (
+            <button onClick={() => setViewingBlog(false)} className="back-btnss">Back to blogs</button>
+          )}
+          {isAuthenticated ? (
+            <>
+              <Link to="/" className="navbar-link">Homepage</Link>
+              <Link to="/myblogs" className="navbar-link">My Blogs</Link>
+              <Link to="/create-blog" className="navbar-link">Add Blog</Link>
+              <button onClick={logout} className="logout-btn">Logout</button>
+            </>
+          ) : (
+            <><Link to="/login" className="navbar-link">Login</Link><Link to="/Register" className="navbar-link">Register</Link></>
+          )}
+        </div>
+      </nav>
+      <div className="main-content">
+        <main className="content">
+          {renderContent()}
+        </main>
+      </div>
+      <footer className="footer">
+        <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
+        <div className="footer-links">
+          <Link to="/about" className="footer-link">About</Link>
+          <Link to="/contact" className="footer-link">Contact</Link>
+          <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+        </div>
+      </footer>
+    </div>
   );
 }
 

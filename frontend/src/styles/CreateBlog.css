@@ -10,6 +10,7 @@
 .create-blog-container h2 {
   text-align: center;
   margin-bottom: 20px;
+  color: black;
 }
 
 .create-blog-container form {
@@ -25,6 +26,8 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  background-color: white;
+  color: black;
 }
 
 .create-blog-container textarea {
@@ -58,3 +61,19 @@ form label {
   font-weight: bold;
   color: #333;
 }
+.main-contentss{
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  width: 100%;
+  
+}
+.contented {
+  flex: 1;
+  padding: 10px;
+  background-color: #fff;
+}
+
+
+
+

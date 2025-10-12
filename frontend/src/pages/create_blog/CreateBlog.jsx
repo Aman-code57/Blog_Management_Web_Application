@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
-import Layout from "../../components/Layout";
 import api from "../../utils/api";
 import "../../styles/CreateBlog.css";
+import "../../styles/Layout.css";
 
 function CreateBlog() {
   const [title, setTitle] = useState("");
@@ -12,6 +12,7 @@ function CreateBlog() {
   const [video, setVideo] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,25 +63,52 @@ function CreateBlog() {
   };
 
   return (
-    <Layout>
-      <div className="create-blog-container">
-        <h2>Create New Blog</h2>
-        <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength="50" required/>
-          <textarea type="description" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} required/>
+    <div className="layout-container-create">
+      <nav className="navbar">
+        <h1 className="navbar-title">Blog Management</h1>
+        <div className="navbar-right">
+          {isAuthenticated ? (
+            <>
+              <Link to="/" className="navbar-link">Homepage</Link>
+              <Link to="/myblogs" className="navbar-link">My Blogs</Link>
+              <Link to="/create-blog" className="navbar-link">Add Blog</Link>
+              <button onClick={logout} className="logout-btn">Logout</button>
+            </>
+          ) : (
+            <Link to="/login" className="navbar-link">Login</Link>
+          )}
+        </div>
+      </nav>
+      <div className="main-contentss">
+        <main className="contented">
+          <div className="create-blog-container">
+            <h2>Create New Blog</h2>
+            <form onSubmit={handleSubmit}>
+              <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength="50" required/>
+              <textarea type="description" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} required/>
 
-          <label htmlFor="imageUpload">Upload Image:</label>
-          <input id="imageUpload" type="file" accept="image/*" onChange={handleImageChange}/>
+              <label htmlFor="imageUpload">Upload Image:</label>
+              <input id="imageUpload" type="file" accept="image/*" onChange={handleImageChange}/>
 
-          <label htmlFor="videoUpload">Upload Video:</label>
-          <input id="videoUpload" type="file" accept="video/*" onChange={handleVideoChange}/>
+              <label htmlFor="videoUpload">Upload Video:</label>
+              <input id="videoUpload" type="file" accept="video/*" onChange={handleVideoChange}/>
 
-          <button type="submit">Create Blog</button>
-          {error && <p className="error">{error}</p>}
-        </form>
+              <button type="submit">Create Blog</button>
+              {error && <p className="error">{error}</p>}
+            </form>
 
+          </div>
+        </main>
       </div>
-    </Layout>
+      <footer className="footer">
+        <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
+        <div className="footer-links">
+          <Link to="/about" className="footer-link">About</Link>
+          <Link to="/contact" className="footer-link">Contact</Link>
+          <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+        </div>
+      </footer>
+    </div>
   );
 }
 

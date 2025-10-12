@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
-import Layout from "../../components/Layout";
 import { FaThumbsUp, FaComment } from "react-icons/fa";
 import api from "../../utils/api";
 import "../../styles/BlogRead.css";
+import "../../styles/Layout.css";
 
 function BlogRead() {
   const { blogId } = useParams();
@@ -15,7 +15,7 @@ function BlogRead() {
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     api.get(`/blogs/${blogId}`)
@@ -154,67 +154,150 @@ function BlogRead() {
       });
   };
 
+
+
   if (error) {
     return (
-      <Layout>
-        <p className="error">{error}</p>
-      </Layout>
+      <div className="layout-container-read">
+        <nav className="navbar">
+          <h1 className="navbar-title">Blog Management</h1>
+          <div className="navbar-right">
+            {isAuthenticated ? (
+              <>
+                <Link to="/" className="navbar-link">Homepage</Link>
+                <Link to="/myblogs" className="navbar-link">My Blogs</Link>
+                <Link to="/create-blog" className="navbar-link">Add Blog</Link>
+                <button onClick={logout} className="logout-btn">Logout</button>
+              </>
+            ) : (
+              <Link to="/login" className="navbar-link">Login</Link>
+            )}
+          </div>
+        </nav>
+        <div className="main-contented">
+          <main className="content">
+            <p className="error">{error}</p>
+          </main>
+        </div>
+        <footer className="footer">
+          <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
+          <div className="footer-links">
+            <Link to="/about" className="footer-link">About</Link>
+            <Link to="/contact" className="footer-link">Contact</Link>
+            <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+          </div>
+        </footer>
+      </div>
     );
   }
 
   if (!blog) {
     return (
-      <Layout>
-        <p>Loading...</p>
-      </Layout>
+      <div className="layout-container">
+        <nav className="navbar">
+          <h1 className="navbar-title">Blog Management</h1>
+          <div className="navbar-right">
+            {isAuthenticated ? (
+              <>
+                <Link to="/" className="navbar-link">Homepage</Link>
+                <Link to="/myblogs" className="navbar-link">My Blogs</Link>
+                <Link to="/create-blog" className="navbar-link">Add Blog</Link>
+                <button onClick={logout} className="logout-btn">Logout</button>
+              </>
+            ) : (
+              <Link to="/login" className="navbar-link">Login</Link>
+            )}
+          </div>
+        </nav>
+        <div className="main-content">
+          <main className="content">
+            <p>Loading...</p>
+          </main>
+        </div>
+        <footer className="footer">
+          <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
+          <div className="footer-links">
+            <Link to="/about" className="footer-link">About</Link>
+            <Link to="/contact" className="footer-link">Contact</Link>
+            <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+          </div>
+        </footer>
+      </div>
     );
   }
 
   return (
-    <Layout>
-      <div className="blog-read-container">
-        <h1>{blog.title}</h1>
-        {blog.image_url && <img src={`http://localhost:8000${blog.image_url}`} alt={blog.title} />}
-        {blog.video_url && <video src={`http://localhost:8000${blog.video_url}`} controls />}
-        <div className="blog-content">
-          <p>{blog.content}</p>
-          <p>Author: {blog.author_username}</p>
-          <div className="blog-actions">
-            <button 
-              onClick={handleLike} 
-              disabled={!isAuthenticated}
-              className={`like-btn ${isLiked ? 'liked' : ''}`}
-              style={{ opacity: !isAuthenticated ? 0.5 : 1, cursor: !isAuthenticated ? 'not-allowed' : 'pointer' }}
-            >
-              <FaThumbsUp style={{ color: isLiked ? '#007bff' : 'inherit' }} />
-              <span className="sr-only">Like</span>
-              {blog.likes_count || 0}
-            </button>
-            <button className="comment-btn">
-              <FaComment />
-              <span className="sr-only">Comment</span>
-              {blog.comments_count || 0}
-            </button>
-          </div>
-          <div className="comments-section">
-            <h3>Comments ({blog.comments_count || 0})</h3>
-            {isAuthenticated && (
-              <div className="add-comment">
-                <textarea
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Add a comment..."
-                />
-                <button onClick={handleAddComment} className="post-btn">Post</button>
+    <div className="layout-container">
+      <nav className="navbar">
+        <h1 className="navbar-title">Blog Management</h1>
+        <div className="navbar-right">
+          {isAuthenticated ? (
+            <>
+              <Link to="/" className="navbar-link">Homepage</Link>
+              <Link to="/myblogs" className="navbar-link">My Blogs</Link>
+              <Link to="/create-blog" className="navbar-link">Add Blog</Link>
+              <button onClick={logout} className="logout-btn">Logout</button>
+            </>
+          ) : (
+            <Link to="/login" className="navbar-link">Login</Link>
+          )}
+        </div>
+      </nav>
+      <div className="main-content">
+        <main className="content">
+          <div className="blog-read-container">
+            <h1>{blog.title}</h1>
+            {blog.image_url && <img src={`http://localhost:8000${blog.image_url}`} alt={blog.title} />}
+            {blog.video_url && <video src={`http://localhost:8000${blog.video_url}`} controls />}
+            <div className="blog-content">
+              <p>{blog.content}</p>
+              <p>Author: {blog.author_username}</p>
+              <div className="blog-actions">
+                <button
+                  onClick={handleLike}
+                  disabled={!isAuthenticated}
+                  className={`like-btn ${isLiked ? 'liked' : ''}`}
+                  style={{ opacity: !isAuthenticated ? 0.5 : 1, cursor: !isAuthenticated ? 'not-allowed' : 'pointer' }}
+                >
+                  <FaThumbsUp style={{ color: isLiked ? '#007bff' : 'inherit' }} />
+                  <span className="sr-only">Like</span>
+                  {blog.likes_count || 0}
+                </button>
+                <button className="comment-btn">
+                  <FaComment />
+                  <span className="sr-only">Comment</span>
+                  {blog.comments_count || 0}
+                </button>
               </div>
-            )}
-            <div className="comments-list">
-              {renderComments(comments)}
+              <div className="comments-section">
+                <h3>Comments ({blog.comments_count || 0})</h3>
+                {isAuthenticated && (
+                  <div className="add-comment">
+                    <textarea
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      placeholder="Add a comment..."
+                    />
+                    <button onClick={handleAddComment} className="post-btn">Post</button>
+                  </div>
+                )}
+                <div className="comments-list">
+                  {renderComments(comments)}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
-    </Layout>
+      <footer className="footer">
+        <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
+        <div className="footer-links">
+          <Link to="/about" className="footer-link">About</Link>
+          <Link to="/contact" className="footer-link">Contact</Link>
+          <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+        </div>
+      </footer>
+    </div>
   );
 }
 

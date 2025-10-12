@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
-import Layout from "../../components/Layout";
+import { Link } from "react-router-dom";
 import api from "../../utils/api";
 import "../../styles/Profile.css";
+import "../../styles/Layout.css";
 
 function Profile() {
   const [blogs, setBlogs] = useState([]);
@@ -16,7 +17,7 @@ function Profile() {
   const [newComment, setNewComment] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState("");
-  const { user } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -145,88 +146,115 @@ function Profile() {
   };
 
   return (
-    <Layout>
-      <div className="profile-container">
-        <h2>My Blogs</h2>
-        {blogs.length === 0 ? (
-          <p>No blogs yet. Create one from the homepage!</p>
-        ) : (
-          <div className="blog-grid">
-            {blogs.map((blog) => (
-              <div key={blog.id} className="blog-card">
-                {blog.image_url && <img src={`http://localhost:8000${blog.image_url}`} alt={blog.title} />}
-                {blog.video_url && <video src={`http://localhost:8000${blog.video_url}`} controls />}
-                <div className="blog-content">
-                  {editingBlog === blog.id ? (
-                    <>
-                      <input
-                        type="text"
-                        value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        className="edit-input"
-                      />
-                      <textarea
-                        value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
-                        className="edit-textarea"
-                      />
-                      <label htmlFor="editImageUpload">Change Image:</label>
-                      <input
-                        id="editImageUpload"
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setEditImage(e.target.files[0])}
-                      />
-                      <label htmlFor="editVideoUpload">Change Video:</label>
-                      <input
-                        id="editVideoUpload"
-                        type="file"
-                        accept="video/*"
-                        onChange={(e) => setEditVideo(e.target.files[0])}
-                      />
-                      <button onClick={() => handleSaveEdit(blog.id)} className="save-btn">Save</button>
-                      <button onClick={() => setEditingBlog(null)} className="cancel-btn">Cancel</button>
-                    </>
-                  ) : (
-                    <>
-                      <h2>{blog.title}</h2>
-                      <p>
-                        {expandedBlogId === blog.id ? blog.content : `${blog.content.substring(0, 100)}${blog.content.length > 100 ? '...' : ''}`}
-                      </p>
-                      <button onClick={() => toggleContent(blog.id)} className="read-btn">
-                        {expandedBlogId === blog.id ? 'Hide' : 'Read'}
-                      </button>
-                      <div className="blog-actions">
-                        <button onClick={() => handleEdit(blog)} className="edit-btn">Edit</button>
-                        <button onClick={() => handleDelete(blog.id)} className="delete-btn">Delete</button>
-                        <button onClick={() => toggleComments(blog.id)} className="comments-btn">
-                          {comments[blog.id] ? 'Hide Comments' : 'Show Comments'} ({blog.comments_count || 0})
-                        </button>
-                      </div>
-                      {comments[blog.id] && (
-                        <div className="comments-section">
-                          <div className="add-comment">
-                            <textarea
-                              value={newComment[blog.id] || ''}
-                              onChange={(e) => setNewComment(prev => ({ ...prev, [blog.id]: e.target.value }))}
-                              placeholder="Add a comment..."
-                            />
-                            <button onClick={() => handleAddComment(blog.id)} className="post-btn">Post</button>
+    <div className="layout-container-myblogs">
+      <nav className="navbar">
+        <h1 className="navbar-title">Blog Management</h1>
+        <div className="navbar-right">
+          {isAuthenticated ? (
+            <>
+              <Link to="/" className="navbar-link">Homepage</Link>
+              <Link to="/myblogs" className="navbar-link">My Blogs</Link>
+              <Link to="/create-blog" className="navbar-link">Add Blog</Link>
+              <button onClick={logout} className="logout-btn">Logout</button>
+            </>
+          ) : (
+            <Link to="/login" className="navbar-link">Login</Link>
+          )}
+        </div>
+      </nav>
+      <div className="main-content">
+        <main className="content">
+          <div className="profile-container">
+            <h2>My Blogs</h2>
+            {blogs.length === 0 ? (
+              <p>No blogs yet. Create one from the homepage!</p>
+            ) : (
+              <div className="blog-grid">
+                {blogs.map((blog) => (
+                  <div key={blog.id} className="blog-card">
+                    {blog.image_url && <img src={`http://localhost:8000${blog.image_url}`} alt={blog.title} />}
+                    {blog.video_url && <video src={`http://localhost:8000${blog.video_url}`} controls />}
+                    <div className="blog-content">
+                      {editingBlog === blog.id ? (
+                        <>
+                          <input
+                            type="text"
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            className="edit-input"
+                          />
+                          <textarea
+                            value={editContent}
+                            onChange={(e) => setEditContent(e.target.value)}
+                            className="edit-textarea"
+                          />
+                          <label htmlFor="editImageUpload">Change Image:</label>
+                          <input
+                            id="editImageUpload"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setEditImage(e.target.files[0])}
+                          />
+                          <label htmlFor="editVideoUpload">Change Video:</label>
+                          <input
+                            id="editVideoUpload"
+                            type="file"
+                            accept="video/*"
+                            onChange={(e) => setEditVideo(e.target.files[0])}
+                          />
+                          <button onClick={() => handleSaveEdit(blog.id)} className="save-btn">Save</button>
+                          <button onClick={() => setEditingBlog(null)} className="cancel-btn">Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          <h2>{blog.title}</h2>
+                          <p>
+                            {expandedBlogId === blog.id ? blog.content : `${blog.content.substring(0, 100)}${blog.content.length > 100 ? '...' : ''}`}
+                          </p>
+                          <button onClick={() => toggleContent(blog.id)} className="read-btn">
+                            {expandedBlogId === blog.id ? 'Hide' : 'Read'}
+                          </button>
+                          <div className="blog-actions">
+                            <button onClick={() => handleEdit(blog)} className="edit-btn">Edit</button>
+                            <button onClick={() => handleDelete(blog.id)} className="delete-btn">Delete</button>
+                            <button onClick={() => toggleComments(blog.id)} className="comments-btn">
+                              {comments[blog.id] ? 'Hide Comments' : 'Show Comments'} ({blog.comments_count || 0})
+                            </button>
                           </div>
-                          <div className="comments-list">
-                            {renderComments(comments[blog.id], blog.id)}
-                          </div>
-                        </div>
+                          {comments[blog.id] && (
+                            <div className="comments-section">
+                              <div className="add-comment">
+                                <textarea
+                                  value={newComment[blog.id] || ''}
+                                  onChange={(e) => setNewComment(prev => ({ ...prev, [blog.id]: e.target.value }))}
+                                  placeholder="Add a comment..."
+                                />
+                                <button onClick={() => handleAddComment(blog.id)} className="post-btn">Post</button>
+                              </div>
+                              <div className="comments-list">
+                                {renderComments(comments[blog.id], blog.id)}
+                              </div>
+                            </div>
+                          )}
+                        </>
                       )}
-                    </>
-                  )}
-                </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
-        )}
+        </main>
       </div>
-    </Layout>
+      <footer className="footer">
+        <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
+        <div className="footer-links">
+          <Link to="/about" className="footer-link">About</Link>
+          <Link to="/contact" className="footer-link">Contact</Link>
+          <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+        </div>
+      </footer>
+    </div>
   );
 }
 

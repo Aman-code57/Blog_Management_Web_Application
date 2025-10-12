@@ -75,15 +75,44 @@
 
 .content {
   flex: 1;
-  padding: 1rem;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #fff;
   width: 100%;
 }
-.back-btns{
+
+.blog-read-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.blog-read-container h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.blog-read-container img,
+.blog-read-container video {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.blog-content {
+  font-size: 1.2em;
+  line-height: 1.6;
+}
+
+.blog-content p {
+  margin-bottom: 10px;
+}
+/* .back-btns{
   background-color: #007bff;;
   color: white;
-  margin-right: 5px;
+  margin-right: 10px;
   margin-top: 2px;
-}
+} */
 .footer {
   background-color: #007bff;
   color: #fff;

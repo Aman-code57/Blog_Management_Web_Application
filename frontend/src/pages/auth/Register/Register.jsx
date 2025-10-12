@@ -78,6 +78,7 @@ function Register() {
     <div className="page-container">
       <nav className="navbar">
         <h1>Blog Management</h1>
+        <button onClick={() => window.location.href = "/"} className="back-button">Blogpage</button>
       </nav>
       <div className="register-container">
         <h2>Register</h2>
