@@ -289,9 +289,6 @@ function Home() {
       <nav className="navbar">
         <NavLink to="/" className="navbar-title-link"><h1 className="navbar-title"> Blog Management</h1></NavLink>
         <div className="navbar-right">
-          {viewingBlog && (
-            <button onClick={() => setViewingBlog(false)} className="back-btnss"><LuUndo2/></button>
-          )}
           {isAuthenticated ? (
             <>
               <NavLink to="/" className="navbar-link">Homepage</NavLink>
@@ -306,6 +303,9 @@ function Home() {
       </nav>
       <div className="main-content">
         <main className="content">
+           {viewingBlog && (
+          <button onClick={() => setViewingBlog(false)} className="back-btnss"><LuUndo2/></button>
+        )}
           {renderContent()}
         </main>
       </div>

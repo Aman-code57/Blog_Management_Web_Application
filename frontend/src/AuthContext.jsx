@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { TailSpin } from 'react-loader-spinner';
 import api from './utils/api';
 
 const AuthContext = createContext();
@@ -69,9 +70,28 @@ export const AuthProvider = ({ children }) => {
     logoutLoading,
   };
 
+  const SpinnerOverlay = () => (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      backdropFilter: 'blur(3px)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 9999,
+    }}>
+      <TailSpin height="50" width="50" color="#007bff" ariaLabel="loading" />
+    </div>
+  );
+
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
+      {(loginLoading || logoutLoading) && <SpinnerOverlay />}
     </AuthContext.Provider>
   );
 };

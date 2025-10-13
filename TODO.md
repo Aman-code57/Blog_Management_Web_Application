@@ -1,0 +1,3 @@
+- [x] Modify AuthContext.jsx to add a full-page SpinnerOverlay component that appears when loginLoading or logoutLoading is true, blurring the background and showing a centered spinner.
+- [x] Ensure the spinner displays during the 2-second delay in login and navigates to homepage after.
+- [ ] Test the implementation for both login and logout.
