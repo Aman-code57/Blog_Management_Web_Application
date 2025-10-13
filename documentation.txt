@@ -1,0 +1,138 @@
+# Blog Management Application Documentation
+
+## Overview
+
+The Blog Management Application is a full-stack web application built using a Three-Tier Architecture:
+
+- **Presentation Tier (Frontend)**: React Single Page Application (SPA) handling user interface, routing, and client-side logic.
+- **Application Tier (Backend)**: FastAPI REST API with business logic, API endpoints, authentication, and data processing.
+- **Data Tier (Database)**: SQLAlchemy ORM models with database connection layer (assumed to be SQLite or similar based on configuration).
+
+The application allows users to register, login, create blogs with optional images/videos, view blogs, like blogs, comment on blogs (with nested replies), and manage their own blogs (edit/delete). Authentication uses JWT tokens stored in HTTP-only cookies.
+
+## UI Flow
+
+The UI is built with React Router for navigation. The main entry point is `App.jsx`, which wraps the app in `AuthProvider` for authentication context and `ToastContainer` for notifications.
+
+### Authentication Flow
+1. **Unauthenticated Users**:
+   - Land on `/` (Homepage) but are redirected to `/login` if not authenticated.
+   - Can access `/login`, `/register`, `/forgot-password`, `/otp-forgot-password`, `/reset-password`.
+   - Homepage shows a list of blogs but restricts actions like liking/commenting.
+
+2. **Login Process** (`/login`):
+   - User enters username and password.
+   - Frontend validates fields (required).
+   - On submit, calls `AuthContext.login()`, which posts to `/api/login`.
+   - On success, sets user in context, navigates to `/`.
+   - On failure, shows error.
+
+3. **Registration Process** (`/register`):
+   - User enters username, email, password.
+   - Frontend validates: username >=3 chars, valid email, password >=6 chars.
+   - On submit, posts to `/api/register`.
+   - On success, shows toast, navigates to `/login`.
+   - On failure, shows error.
+
+4. **Password Reset Flow**:
+   - `/forgot-password`: Enter email, post to `/api/send-otp`.
+   - `/otp-forgot-password`: Enter OTP, post to `/api/verify-otp`.
+   - `/reset-password`: Enter new password, post to `/api/reset-password-with-otp`.
+
+### Main Application Flow
+1. **Homepage (`/`)** (`Homepage.jsx`):
+   - Displays list of all blogs (fetched from `/api/blogs`).
+   - Each blog card shows title, truncated content, author, likes/comments count.
+   - Buttons: Like (calls `/api/likes/blog/{id}`), Comment toggle (fetches `/api/comments/blog/{id}`).
+   - "Read More" opens blog in read mode within the page.
+   - In read mode: Full blog content, like/comment sections with nested replies.
+   - Authenticated users can add comments/replies, like blogs.
+   - Navigation: Links to Homepage, My Blogs, Add Blog, Logout.
+
+2. **Create Blog (`/create-blog`)** (`CreateBlog.jsx`):
+   - Form: Title (max 50 chars), Content, optional Image/Video upload.
+   - Validates: Title <=50, required fields, file types (image/video).
+   - On submit, posts FormData to `/api/blogs`.
+   - On success, navigates to `/`.
+
+3. **Profile/My Blogs (`/myblogs`)** (`Profile.jsx`):
+   - Fetches user's blogs from `/api/blogs/user/{user_id}`.
+   - Displays grid of blogs with edit/delete options.
+   - Edit: Inline form for title/content/image/video, patch to `/api/blogs/{id}`.
+   - Delete: Modal confirmation, delete to `/api/blogs/{id}`.
+   - Comments section similar to homepage.
+
+4. **Blog Read (`/blog/{blogId}`)** (`BlogRead.jsx` - assumed similar to homepage read mode):
+   - Fetches single blog from `/api/blogs/{id}`.
+   - Displays full content, likes/comments.
+
+5. **About (`/about`)**: Static page.
+
+### Navigation and Layout
+- Navbar: Title, links (conditional on auth), logout button.
+- Footer: Copyright, links to About/Contact/Privacy.
+- Layout uses CSS classes for responsive design.
+
+## API Flow
+
+The backend uses FastAPI with routers for auth, blogs, comments, likes. Base URL: `http://localhost:8000/api`. Authentication via JWT in cookies.
+
+### Authentication Endpoints (`/api/auth.py`)
+- **POST /register**: Body: {username, email, password}. Validates uniqueness, hashes password, returns user.
+- **POST /login**: Body: {username, password}. Verifies bcrypt hash, sets JWT cookie, returns success.
+- **GET /me**: Returns current user from JWT.
+- **POST /logout**: Clears cookie.
+- **POST /send-otp**: Body: {email}. Sends OTP via email.
+- **POST /verify-otp**: Body: {email, otp}. Verifies OTP, sets reset token.
+- **POST /reset-password-with-otp**: Body: {reset_token, new_password}. Resets password.
+
+### Blogs Endpoints (`/api/blogs.py`)
+- **GET /**: Returns all blogs with author, likes/comments count.
+- **GET /user/{user_id}**: Returns user's blogs.
+- **GET /{blog_id}**: Returns single blog details.
+- **POST /**: FormData: title, content, image?, video?. Creates blog, uploads files to `/uploads`.
+- **PATCH /{blog_id}**: Updates blog (auth required, owner only).
+- **DELETE /{blog_id}**: Deletes blog (auth required, owner only).
+
+### Comments Endpoints (`/api/comments.py`)
+- **GET /blog/{blog_id}**: Returns comments for blog (nested).
+- **POST /blog/{blog_id}**: Body: {content, parent_id?}. Adds comment/reply (auth required).
+- **DELETE /{comment_id}**: Deletes comment (auth required, owner or blog owner).
+
+### Likes Endpoints (`/api/likes.py`)
+- **GET /blog/{blog_id}**: Returns like status and count (auth required).
+- **POST /blog/{blog_id}**: Toggles like, returns updated count (auth required).
+
+### Middleware and Config
+- CORS: Allows localhost:5173, credentials.
+- Static files: Serves `/uploads` from `public/uploads`.
+- Database: SQLAlchemy, creates tables on startup.
+
+## Validation
+
+### Backend Validation (Pydantic Schemas)
+- **UserCreate**: username (str), email (EmailStr), password (str).
+- **UserLogin**: username (str), password (str).
+- **UserOut**: id (int), username (str), email (str).
+- **SendOTP**: email (EmailStr).
+- **VerifyOTP**: email (EmailStr), otp (str).
+- **ResetPasswordOTP**: reset_token (str), new_password (str).
+- **BlogCreate**: title (str), content (str), image_url?, video_url?.
+- **BlogOut**: id, title, content, image_url?, video_url?, author_username?, likes_count, comments_count.
+- **CommentCreate**: content (str), parent_id? (int).
+- **CommentOut**: id, content, username?, parent_comment_id?.
+
+Additional validations:
+- Unique username/email on register.
+- Password hashing with bcrypt.
+- File uploads: Images/videos only, saved to disk.
+- Auth checks: JWT required for protected routes, ownership for edits/deletes.
+
+### Frontend Validation
+- **Login**: Username/password required.
+- **Register**: Username >=3, valid email, password >=6.
+- **CreateBlog**: Title <=50, required content, file type checks.
+- Components: `Input.jsx` for error display, `FormField.jsx` for labels.
+- Real-time validation on blur/change.
+
+This documentation covers the full UI flow, API flow, and validation based on the codebase.

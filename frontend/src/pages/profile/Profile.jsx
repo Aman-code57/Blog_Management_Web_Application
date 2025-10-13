@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
 import { Link } from "react-router-dom";
 import api from "../../utils/api";
+import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 import "../../styles/Profile.css";
 import "../../styles/Layout.css";
+import "../../styles/DeleteModal.css";
 
 function Profile() {
   const [blogs, setBlogs] = useState([]);
@@ -17,6 +19,8 @@ function Profile() {
   const [newComment, setNewComment] = useState({});
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [blogToDelete, setBlogToDelete] = useState(null);
   const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
@@ -54,15 +58,27 @@ function Profile() {
     }
   };
 
-  const handleDelete = async (blogId) => {
-    if (!window.confirm("Are you sure you want to delete this blog?")) return;
+  const openDeleteModal = (blog) => {
+    setBlogToDelete(blog);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!blogToDelete) return;
     try {
-      await api.delete(`/blogs/${blogId}`);
-      setBlogs(blogs.filter(blog => blog.id !== blogId));
+      await api.delete(`/blogs/${blogToDelete.id}`);
+      setBlogs(blogs.filter(blog => blog.id !== blogToDelete.id));
+      setShowDeleteModal(false);
+      setBlogToDelete(null);
     } catch (error) {
       console.error("Error deleting blog:", error);
       alert("Failed to delete blog");
     }
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setBlogToDelete(null);
   };
 
   const toggleContent = (id) => {
@@ -216,7 +232,7 @@ function Profile() {
                           </button>
                           <div className="blog-actions">
                             <button onClick={() => handleEdit(blog)} className="edit-btn">Edit</button>
-                            <button onClick={() => handleDelete(blog.id)} className="delete-btn">Delete</button>
+                            <button onClick={() => openDeleteModal(blog)} className="delete-btn">Delete</button>
                             <button onClick={() => toggleComments(blog.id)} className="comments-btn">
                               {comments[blog.id] ? 'Hide Comments' : 'Show Comments'} ({blog.comments_count || 0})
                             </button>
@@ -254,6 +270,12 @@ function Profile() {
           <Link to="/privacy" className="footer-link">Privacy Policy</Link>
         </div>
       </footer>
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDelete}
+        blogTitle={blogToDelete?.title || ''}
+      />
     </div>
   );
 }

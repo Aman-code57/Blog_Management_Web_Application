@@ -30,13 +30,13 @@
   background-color: #003d80;
 }
 
-.blog-grid {
+.blog-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
 }
 
-.blog-card {
+.blog-cards {
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
@@ -46,23 +46,23 @@
   flex-direction: column;
 }
 
-.blog-card:hover {
+.blog-cards:hover {
   transform: translateY(-6px);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
 }
-.blog-card img,
-.blog-card video {
+.blog-cards img,
+.blog-cards video {
   width: 100%;
   height: 180px;
   object-fit: cover;
 }
 
-.blog-content {
+.blog-contents {
   padding: 16px;
   flex-grow: 1;
 }
 
-.blog-content h2 {
+.blog-contents h2 {
   font-size: 1.2rem;
   margin-bottom: 8px;
   color: #333;

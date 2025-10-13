@@ -1,4 +1,5 @@
-# TODO for Adding Clickable "Add Blog" Link in Homepage
+# TODO: Add Popup Confirmation for Deleting Blogs
 
-- [ ] Modify Homepage.jsx to replace static "Add Blog" text with a conditional Link component that navigates to "/create-blog" if authenticated, otherwise to "/login".
-- [ ] Test the application to ensure the link navigates correctly in both authenticated and unauthenticated states.
+- [x] Create DeleteConfirmationModal.jsx component in frontend/src/components/
+- [x] Create DeleteModal.css styles in frontend/src/styles/
+- [x] Update Profile.jsx to integrate the delete confirmation modal

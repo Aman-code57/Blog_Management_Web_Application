@@ -233,8 +233,8 @@ function Home() {
         ) : (
           <div className="blog-list">
             {blogs.map((blog) => (
-              <div key={blog.id} className="blog-card">
-                <div className="blog-content">
+              <div key={blog.id} className="blog-cards">
+                <div className="blog-contents">
                   <h2>{blog.title}</h2>
                   <p>{`${blog.content.substring(0, 100)}${blog.content.length > 100 ? '...' : ''}`}</p>
                   <button onClick={() => { setViewingBlog(true); setSelectedBlog(blog); }} className="read-more-btn">
