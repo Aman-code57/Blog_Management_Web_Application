@@ -291,7 +291,7 @@ function Profile() {
       <LogoutConfirmationModal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
-        onConfirm={logout}
+        onConfirm={() => { setShowLogoutModal(false); logout(); }}
       />
     </div>
   );
