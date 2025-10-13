@@ -12,6 +12,8 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +30,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
+    setLoginLoading(true);
     try {
       await api.post('/login', { username, password });
       const response = await api.get('/me');
@@ -37,14 +40,21 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       toast.error('Login failed. Please check your credentials.');
       throw error;
+    } finally {
+      setLoginLoading(false);
     }
   };
 
   const logout = async () => {
-    await api.post('/logout');
-    setUser(null);
-    toast.success('Logout successful!');
-    navigate('/');
+    setLogoutLoading(true);
+    try {
+      await api.post('/logout');
+      setUser(null);
+      toast.success('Logout successful!');
+      navigate('/');
+    } finally {
+      setLogoutLoading(false);
+    }
   };
 
   const value = {
@@ -52,6 +62,8 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     isAuthenticated: !!user,
+    loginLoading,
+    logoutLoading,
   };
 
   return (

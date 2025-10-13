@@ -23,6 +23,7 @@ function Profile() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [blogToDelete, setBlogToDelete] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [savingBlog, setSavingBlog] = useState(null);
   const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
@@ -42,6 +43,7 @@ function Profile() {
   };
 
   const handleSaveEdit = async (blogId) => {
+    setSavingBlog(blogId);
     const formData = new FormData();
     formData.append("title", editTitle);
     formData.append("content", editContent);
@@ -57,6 +59,8 @@ function Profile() {
     } catch (error) {
       console.error("Error updating blog:", error);
       alert("Failed to update blog");
+    } finally {
+      setSavingBlog(null);
     }
   };
 
@@ -200,11 +204,13 @@ function Profile() {
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
                             className="edit-input"
+                            disabled={savingBlog === blog.id}
                           />
                           <textarea
                             value={editContent}
                             onChange={(e) => setEditContent(e.target.value)}
                             className="edit-textarea"
+                            disabled={savingBlog === blog.id}
                           />
                           <label htmlFor="editImageUpload">Change Image:</label>
                           <input
@@ -212,6 +218,7 @@ function Profile() {
                             type="file"
                             accept="image/*"
                             onChange={(e) => setEditImage(e.target.files[0])}
+                            disabled={savingBlog === blog.id}
                           />
                           <label htmlFor="editVideoUpload">Change Video:</label>
                           <input
@@ -219,9 +226,12 @@ function Profile() {
                             type="file"
                             accept="video/*"
                             onChange={(e) => setEditVideo(e.target.files[0])}
+                            disabled={savingBlog === blog.id}
                           />
-                          <button onClick={() => handleSaveEdit(blog.id)} className="save-btn">Save</button>
-                          <button onClick={() => setEditingBlog(null)} className="cancel-btn">Cancel</button>
+                          <button onClick={() => handleSaveEdit(blog.id)} className="save-btn" disabled={savingBlog === blog.id}>
+                            {savingBlog === blog.id ? "Saving..." : "Save"}
+                          </button>
+                          <button onClick={() => setEditingBlog(null)} className="cancel-btn" disabled={savingBlog === blog.id}>Cancel</button>
                         </>
                       ) : (
                         <>

@@ -1,7 +1,10 @@
 import React from 'react';
+import { useAuth } from '../AuthContext';
 import "../styles/LogoutModal.css";
 
 const LogoutConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
+  const { logoutLoading } = useAuth();
+
   if (!isOpen) return null;
 
   return (
@@ -10,8 +13,10 @@ const LogoutConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
         <h3>Confirm Logout</h3>
         <p>Are you sure you want to logout? This will end your session.</p>
         <div className="modals-actionss">
-          <button className="btns-cancels" onClick={onClose}>Cancel</button>
-          <button className="btns-confirms" onClick={onConfirm}>Logout</button>
+          <button className="btns-cancels" onClick={onClose} disabled={logoutLoading}>Cancel</button>
+          <button className="btns-confirms" onClick={onConfirm} disabled={logoutLoading}>
+            {logoutLoading ? "Logging out..." : "Logout"}
+          </button>
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@ function Login() {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { login, loginLoading } = useAuth();
 
   const validateUsername = () => {
     if (!username.trim()) {
@@ -65,6 +65,7 @@ function Login() {
           onBlur={validateUsername}
           error={usernameError}
           required
+          disabled={loginLoading}
         />
         <Input
           type="password"
@@ -74,8 +75,11 @@ function Login() {
           onBlur={validatePassword}
           error={passwordError}
           required
+          disabled={loginLoading}
         />
-          <button type="submit">Login</button>
+          <button type="submit" disabled={loginLoading}>
+            {loginLoading ? "Logging in..." : "Login"}
+          </button>
         <Link to="/forgot-password">Forgot Password?</Link>
       </form>
       <p>
