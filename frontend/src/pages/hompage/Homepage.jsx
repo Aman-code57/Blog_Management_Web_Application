@@ -3,7 +3,7 @@ import { useAuth } from "../../AuthContext";
 import CreateBlog from "../create_blog/CreateBlog";
 import About from "../about/About";
 import { FaThumbsUp, FaComment } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import api from "../../utils/api";
 import "../../styles/Homepage.css";
 import "../../styles/Layout.css";
@@ -229,7 +229,7 @@ function Home() {
           return <p className="error">{error}</p>;
         }
         return blogs.length === 0 ? (
-          <p>No blogs available yet. Start by <Link to={isAuthenticated ? "/create-blog" : "/login"}>Add Blog</Link>!</p>
+          <p>No blogs available yet. Start by <NavLink to={isAuthenticated ? "/create-blog" : "/login"}>Add Blog</NavLink>!</p>
         ) : (
           <div className="blog-list">
             {blogs.map((blog) => (
@@ -288,13 +288,13 @@ function Home() {
           )}
           {isAuthenticated ? (
             <>
-              <Link to="/" className="navbar-link">Homepage</Link>
-              <Link to="/myblogs" className="navbar-link">My Blogs</Link>
-              <Link to="/create-blog" className="navbar-link">Add Blog</Link>
+              <NavLink to="/" className="navbar-link">Homepage</NavLink>
+              <NavLink to="/myblogs" className="navbar-link">My Blogs</NavLink>
+              <NavLink to="/create-blog" className="navbar-link">Add Blog</NavLink>
               <button onClick={logout} className="logout-btn">Logout</button>
             </>
           ) : (
-            <><Link to="/login" className="navbar-link">Login</Link><Link to="/Register" className="navbar-link">Register</Link></>
+            <><NavLink to="/login" className="navbar-link">Login</NavLink><NavLink to="/Register" className="navbar-link">Register</NavLink></>
           )}
         </div>
       </nav>
@@ -306,9 +306,9 @@ function Home() {
       <footer className="footer">
         <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
         <div className="footer-links">
-          <Link to="/about" className="footer-link">About</Link>
-          <Link to="/contact" className="footer-link">Contact</Link>
-          <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+          <NavLink to="/about" className="footer-link">About</NavLink>
+          <NavLink to="/contact" className="footer-link">Contact</NavLink>
+          <NavLink to="/privacy" className="footer-link">Privacy Policy</NavLink>
         </div>
       </footer>
     </div>

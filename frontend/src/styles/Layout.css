@@ -30,6 +30,12 @@
   text-decoration: none;
 }
 
+.navbar-link.active {
+  font-weight: bold;
+  text-decoration: underline;
+  color: black;
+}
+
 .logout-btn {
   background-color: #0056b3;
   border: none;
@@ -107,12 +113,14 @@
 .blog-content p {
   margin-bottom: 10px;
 }
+
 /* .back-btns{
   background-color: #007bff;;
   color: white;
   margin-right: 10px;
   margin-top: 2px;
 } */
+
 .footer {
   background-color: #007bff;
   color: #fff;
@@ -121,6 +129,7 @@
   margin-top: auto;
   width: 97.5%;
   height: 9vh;
+  
 }
 
 .footer-links {

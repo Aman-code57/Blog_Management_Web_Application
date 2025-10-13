@@ -162,12 +162,12 @@ function Profile() {
           )}
         </div>
       </nav>
-      <div className="main-content">
-        <main className="content">
+      <div className="main-cont">
+        <main className="cont">
           <div className="profile-container">
             <h2>My Blogs</h2>
             {blogs.length === 0 ? (
-              <p>No blogs yet. Create one from the homepage!</p>
+              <p>No blogs yet. Create one from the <Link to={ "/create-blog"}>Add Blog</Link>!</p>
             ) : (
               <div className="blog-grid">
                 {blogs.map((blog) => (
