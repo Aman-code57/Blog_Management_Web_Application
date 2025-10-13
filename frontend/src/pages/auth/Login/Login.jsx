@@ -34,7 +34,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError(""); 
     const isUsernameValid = validateUsername();
     const isPasswordValid = validatePassword();
     if (!isUsernameValid || !isPasswordValid) {

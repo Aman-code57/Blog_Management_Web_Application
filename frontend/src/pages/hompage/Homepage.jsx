@@ -5,6 +5,7 @@ import About from "../about/About";
 import { FaThumbsUp, FaComment } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import api from "../../utils/api";
+import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import "../../styles/Homepage.css";
 import "../../styles/Layout.css";
 
@@ -20,6 +21,7 @@ function Home() {
   const [newBlogComment, setNewBlogComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
@@ -36,21 +38,17 @@ function Home() {
     }
   }, [currentView]);
 
-  useEffect(() => {
-    if (selectedBlog) {
-      api.get(`/blogs/${selectedBlog.id}`)
-        .then((response) => {
-          setSelectedBlog(response.data);
-        })
-        .catch((err) => console.error("Error fetching blog:", err));
-
-      api.get(`/comments/blog/${selectedBlog.id}`)
-        .then((response) => setBlogComments(response.data))
-        .catch((err) => console.error("Error fetching comments:", err));
+  const handleViewBlog = async (blog) => {
+    try {
+      const blogResponse = await api.get(`/blogs/${blog.id}`);
+      setSelectedBlog(blogResponse.data);
+      const commentsResponse = await api.get(`/comments/blog/${blog.id}`);
+      setBlogComments(commentsResponse.data);
+      setViewingBlog(true);
+    } catch (err) {
+      console.error("Error fetching blog details:", err);
     }
-  }, [selectedBlog]);
-
-  
+  };
 
   const toggleComments = async (blogId) => {
     if (showComments[blogId]) {
@@ -88,7 +86,7 @@ function Home() {
     }
     try {
       await api.post(`/likes/blog/${blogId}`);
-      // Refetch blogs to update like counts
+    
       const response = await api.get("/blogs");
       setBlogs(response.data);
     } catch (err) {
@@ -237,7 +235,7 @@ function Home() {
                 <div className="blog-contents">
                   <h2>{blog.title}</h2>
                   <p>{`${blog.content.substring(0, 100)}${blog.content.length > 100 ? '...' : ''}`}</p>
-                  <button onClick={() => { setViewingBlog(true); setSelectedBlog(blog); }} className="read-more-btn">
+                  <button onClick={() => handleViewBlog(blog)} className="read-more-btn">
                     Read More
                   </button>
                   <p>Author: {blog.author_username}</p>
@@ -281,7 +279,7 @@ function Home() {
   return (
     <div className="layout-container homepage">
       <nav className="navbar">
-        <h1 className="navbar-title">Blog Management</h1>
+        <h1 className="navbar-title"> Blog Management</h1>
         <div className="navbar-right">
           {viewingBlog && (
             <button onClick={() => setViewingBlog(false)} className="back-btnss">Back to blogs</button>
@@ -291,7 +289,7 @@ function Home() {
               <NavLink to="/" className="navbar-link">Homepage</NavLink>
               <NavLink to="/myblogs" className="navbar-link">My Blogs</NavLink>
               <NavLink to="/create-blog" className="navbar-link">Add Blog</NavLink>
-              <button onClick={logout} className="logout-btn">Logout</button>
+              <button onClick={() => setShowLogoutModal(true)} className="logout-btn">Logout</button>
             </>
           ) : (
             <><NavLink to="/login" className="navbar-link">Login</NavLink><NavLink to="/Register" className="navbar-link">Register</NavLink></>
@@ -311,6 +309,11 @@ function Home() {
           <NavLink to="/privacy" className="footer-link">Privacy Policy</NavLink>
         </div>
       </footer>
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={logout}
+      />
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
+import { toast } from "react-toastify";
 import api from "../../utils/api";
+import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import "../../styles/CreateBlog.css";
 import "../../styles/Layout.css";
 
@@ -11,6 +13,7 @@ function CreateBlog() {
   const [image, setImage] = useState(null);
   const [video, setVideo] = useState(null);
   const [error, setError] = useState("");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
 
@@ -29,10 +32,12 @@ function CreateBlog() {
 
     try {
       await api.post("/blogs", formData);
+      toast.success("Blog created successfully!");
       navigate("/");
     } catch (err) {
       console.error("Error creating blog:", err);
       setError(err.response?.data?.detail || "Failed to create blog");
+      toast.error("Failed to create blog. Please try again.");
     }
   };
 
@@ -69,13 +74,13 @@ function CreateBlog() {
         <div className="navbar-right">
           {isAuthenticated ? (
             <>
-              <Link to="/" className="navbar-link">Homepage</Link>
-              <Link to="/myblogs" className="navbar-link">My Blogs</Link>
-              <Link to="/create-blog" className="navbar-link">Add Blog</Link>
-              <button onClick={logout} className="logout-btn">Logout</button>
+              <NavLink to="/" className="navbar-link">Homepage</NavLink>
+              <NavLink to="/myblogs" className="navbar-link">My Blogs</NavLink>
+              <NavLink to="/create-blog" className="navbar-link">Add Blog</NavLink>
+              <button onClick={() => setShowLogoutModal(true)} className="logout-btn">Logout</button>
             </>
           ) : (
-            <Link to="/login" className="navbar-link">Login</Link>
+            <NavLink to="/login" className="navbar-link">Login</NavLink>
           )}
         </div>
       </nav>
@@ -103,11 +108,16 @@ function CreateBlog() {
       <footer className="footer">
         <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
         <div className="footer-links">
-          <Link to="/about" className="footer-link">About</Link>
-          <Link to="/contact" className="footer-link">Contact</Link>
-          <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+          <NavLink to="/about" className="footer-link">About</NavLink>
+          <NavLink to="/contact" className="footer-link">Contact</NavLink>
+          <NavLink to="/privacy" className="footer-link">Privacy Policy</NavLink>
         </div>
       </footer>
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={logout}
+      />
     </div>
   );
 }

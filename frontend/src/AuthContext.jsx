@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import api from './utils/api';
 
 const AuthContext = createContext();
@@ -31,8 +32,10 @@ export const AuthProvider = ({ children }) => {
       await api.post('/login', { username, password });
       const response = await api.get('/me');
       setUser(response.data);
+      toast.success('Login successful!');
       navigate('/');
     } catch (error) {
+      toast.error('Login failed. Please check your credentials.');
       throw error;
     }
   };
@@ -40,6 +43,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     await api.post('/logout');
     setUser(null);
+    toast.success('Logout successful!');
     navigate('/');
   };
 

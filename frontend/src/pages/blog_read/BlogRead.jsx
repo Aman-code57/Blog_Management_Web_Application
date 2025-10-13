@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
 import { FaThumbsUp, FaComment } from "react-icons/fa";
 import api from "../../utils/api";
+import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import "../../styles/BlogRead.css";
 import "../../styles/Layout.css";
 
@@ -15,6 +16,7 @@ function BlogRead() {
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
@@ -167,7 +169,7 @@ function BlogRead() {
                 <Link to="/" className="navbar-link">Homepage</Link>
                 <Link to="/myblogs" className="navbar-link">My Blogs</Link>
                 <Link to="/create-blog" className="navbar-link">Add Blog</Link>
-                <button onClick={logout} className="logout-btn">Logout</button>
+                <button onClick={() => setShowLogoutModal(true)} className="logout-btn">Logout</button>
               </>
             ) : (
               <Link to="/login" className="navbar-link">Login</Link>
@@ -179,17 +181,22 @@ function BlogRead() {
             <p className="error">{error}</p>
           </main>
         </div>
-        <footer className="footer">
-          <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
-          <div className="footer-links">
-            <Link to="/about" className="footer-link">About</Link>
-            <Link to="/contact" className="footer-link">Contact</Link>
-            <Link to="/privacy" className="footer-link">Privacy Policy</Link>
-          </div>
-        </footer>
-      </div>
-    );
-  }
+      <footer className="footer">
+        <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
+        <div className="footer-links">
+          <Link to="/about" className="footer-link">About</Link>
+          <Link to="/contact" className="footer-link">Contact</Link>
+          <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+        </div>
+      </footer>
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={logout}
+      />
+    </div>
+  );
+}
 
   if (!blog) {
     return (
@@ -202,7 +209,7 @@ function BlogRead() {
                 <Link to="/" className="navbar-link">Homepage</Link>
                 <Link to="/myblogs" className="navbar-link">My Blogs</Link>
                 <Link to="/create-blog" className="navbar-link">Add Blog</Link>
-                <button onClick={logout} className="logout-btn">Logout</button>
+                <button onClick={() => setShowLogoutModal(true)} className="logout-btn">Logout</button>
               </>
             ) : (
               <Link to="/login" className="navbar-link">Login</Link>
@@ -214,34 +221,39 @@ function BlogRead() {
             <p>Loading...</p>
           </main>
         </div>
-        <footer className="footer">
-          <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
-          <div className="footer-links">
-            <Link to="/about" className="footer-link">About</Link>
-            <Link to="/contact" className="footer-link">Contact</Link>
-            <Link to="/privacy" className="footer-link">Privacy Policy</Link>
-          </div>
-        </footer>
-      </div>
-    );
-  }
+      <footer className="footer">
+        <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
+        <div className="footer-links">
+          <Link to="/about" className="footer-link">About</Link>
+          <Link to="/contact" className="footer-link">Contact</Link>
+          <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+        </div>
+      </footer>
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={logout}
+      />
+    </div>
+  );
+}
 
   return (
     <div className="layout-container">
       <nav className="navbar">
         <h1 className="navbar-title">Blog Management</h1>
-        <div className="navbar-right">
-          {isAuthenticated ? (
-            <>
-              <Link to="/" className="navbar-link">Homepage</Link>
-              <Link to="/myblogs" className="navbar-link">My Blogs</Link>
-              <Link to="/create-blog" className="navbar-link">Add Blog</Link>
-              <button onClick={logout} className="logout-btn">Logout</button>
-            </>
-          ) : (
-            <Link to="/login" className="navbar-link">Login</Link>
-          )}
-        </div>
+          <div className="navbar-right">
+            {isAuthenticated ? (
+              <>
+                <Link to="/" className="navbar-link">Homepage</Link>
+                <Link to="/myblogs" className="navbar-link">My Blogs</Link>
+                <Link to="/create-blog" className="navbar-link">Add Blog</Link>
+                <button onClick={() => setShowLogoutModal(true)} className="logout-btn">Logout</button>
+              </>
+            ) : (
+              <Link to="/login" className="navbar-link">Login</Link>
+            )}
+          </div>
       </nav>
       <div className="main-content">
         <main className="content">
@@ -297,6 +309,11 @@ function BlogRead() {
           <Link to="/privacy" className="footer-link">Privacy Policy</Link>
         </div>
       </footer>
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={logout}
+      />
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import api from "../../utils/api";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
+import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import "../../styles/Profile.css";
 import "../../styles/Layout.css";
 import "../../styles/DeleteModal.css";
@@ -21,6 +22,7 @@ function Profile() {
   const [replyText, setReplyText] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [blogToDelete, setBlogToDelete] = useState(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
@@ -168,13 +170,13 @@ function Profile() {
         <div className="navbar-right">
           {isAuthenticated ? (
             <>
-              <Link to="/" className="navbar-link">Homepage</Link>
-              <Link to="/myblogs" className="navbar-link">My Blogs</Link>
-              <Link to="/create-blog" className="navbar-link">Add Blog</Link>
-              <button onClick={logout} className="logout-btn">Logout</button>
+              <NavLink to="/" className="navbar-link">Homepage</NavLink>
+              <NavLink to="/myblogs" className="navbar-link">My Blogs</NavLink>
+              <NavLink to="/create-blog" className="navbar-link">Add Blog</NavLink>
+              <button onClick={() => setShowLogoutModal(true)} className="logout-btn">Logout</button>
             </>
           ) : (
-            <Link to="/login" className="navbar-link">Login</Link>
+            <NavLink to="/login" className="navbar-link">Login</NavLink>
           )}
         </div>
       </nav>
@@ -183,7 +185,7 @@ function Profile() {
           <div className="profile-container">
             <h2>My Blogs</h2>
             {blogs.length === 0 ? (
-              <p>No blogs yet. Create one from the <Link to={ "/create-blog"}>Add Blog</Link>!</p>
+              <p>No blogs yet. Create one from the <NavLink to={ "/create-blog"}>Add Blog</NavLink>!</p>
             ) : (
               <div className="blog-grid">
                 {blogs.map((blog) => (
@@ -265,9 +267,9 @@ function Profile() {
       <footer className="footer">
         <p>&copy; {new Date().getFullYear()} Blog Management. All rights reserved.</p>
         <div className="footer-links">
-          <Link to="/about" className="footer-link">About</Link>
-          <Link to="/contact" className="footer-link">Contact</Link>
-          <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+          <NavLink to="/about" className="footer-link">About</NavLink>
+          <NavLink to="/contact" className="footer-link">Contact</NavLink>
+          <NavLink to="/privacy" className="footer-link">Privacy Policy</NavLink>
         </div>
       </footer>
       <DeleteConfirmationModal
@@ -275,6 +277,11 @@ function Profile() {
         onClose={closeDeleteModal}
         onConfirm={confirmDelete}
         blogTitle={blogToDelete?.title || ''}
+      />
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={logout}
       />
     </div>
   );
