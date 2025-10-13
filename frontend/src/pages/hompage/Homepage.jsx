@@ -229,7 +229,7 @@ function Home() {
           return <p className="error">{error}</p>;
         }
         return blogs.length === 0 ? (
-          <p>No blogs available yet. Start by Add Blog!</p>
+          <p>No blogs available yet. Start by <Link to={isAuthenticated ? "/create-blog" : "/login"}>Add Blog</Link>!</p>
         ) : (
           <div className="blog-list">
             {blogs.map((blog) => (
