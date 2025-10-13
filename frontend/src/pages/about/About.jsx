@@ -12,7 +12,7 @@ function About() {
   return (
     <div className="layout-container-about">
       <nav className="navbar">
-        <h1 className="navbar-title">Blog Management</h1>
+        <NavLink to="/" className="navbar-title-link"><h1 className="navbar-title">Blog Management</h1></NavLink>
         <div className="navbar-right">
           {isAuthenticated ? (
             <>

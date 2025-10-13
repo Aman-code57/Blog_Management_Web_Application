@@ -9,6 +9,8 @@ import api from "../../utils/api";
 import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import "../../styles/Homepage.css";
 import "../../styles/Layout.css";
+import { LuUndo2 } from 'react-icons/lu';
+
 
 function Home() {
   const navigate = useNavigate();
@@ -285,10 +287,10 @@ function Home() {
   return (
     <div className="layout-container homepage">
       <nav className="navbar">
-        <h1 className="navbar-title"> Blog Management</h1>
+        <NavLink to="/" className="navbar-title-link"><h1 className="navbar-title"> Blog Management</h1></NavLink>
         <div className="navbar-right">
           {viewingBlog && (
-            <button onClick={() => setViewingBlog(false)} className="back-btnss">Back to blogs</button>
+            <button onClick={() => setViewingBlog(false)} className="back-btnss"><LuUndo2/></button>
           )}
           {isAuthenticated ? (
             <>

@@ -19,6 +19,16 @@
   font-size: 1.5rem;
 }
 
+.navbar-title-link {
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+
+.navbar-title-link:hover {
+  color: #e9ecef;
+}
+
 .navbar-right {
   display: flex;
   align-items: center;
