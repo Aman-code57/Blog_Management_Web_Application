@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
+import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import "../../styles/About.css";
 import "../../styles/Layout.css";
 
 function About() {
   const { isAuthenticated, logout } = useAuth();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   return (
     <div className="layout-container-about">
@@ -17,7 +19,7 @@ function About() {
               <Link to="/" className="navbar-link">Homepage</Link>
               <Link to="/myblogs" className="navbar-link">My Blogs</Link>
               <Link to="/create-blog" className="navbar-link">Add Blog</Link>
-              <button onClick={logout} className="logout-btn">Logout</button>
+              <button onClick={() => setShowLogoutModal(true)} className="logout-btn">Logout</button>
             </>
           ) : (
             <Link to="/login" className="navbar-link">Login</Link>
@@ -51,6 +53,11 @@ function About() {
           <Link to="/privacy" className="footer-link">Privacy Policy</Link>
         </div>
       </footer>
+      <LogoutConfirmationModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={async () => { await logout(); setShowLogoutModal(false); }}
+      />
     </div>
   );
 }

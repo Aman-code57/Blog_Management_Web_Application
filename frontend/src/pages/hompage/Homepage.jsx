@@ -3,13 +3,15 @@ import { useAuth } from "../../AuthContext";
 import CreateBlog from "../create_blog/CreateBlog";
 import About from "../about/About";
 import { FaThumbsUp, FaComment } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 import api from "../../utils/api";
 import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import "../../styles/Homepage.css";
 import "../../styles/Layout.css";
 
 function Home() {
+  const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
   const [error, setError] = useState(null);
   const [currentView] = useState('home');
@@ -66,7 +68,8 @@ function Home() {
 
   const handleBlogLike = async () => {
     if (!isAuthenticated) {
-      alert("Please login to like blogs");
+      toast.error("Please login to like blogs");
+      navigate('/login');
       return;
     }
     try {
@@ -75,29 +78,31 @@ function Home() {
       setSelectedBlog(response.data);
     } catch (err) {
       console.error("Error liking blog:", err);
-      alert("Failed to like blog");
+      toast.error("Failed to like blog");
     }
   };
 
   const handleLike = async (blogId) => {
     if (!isAuthenticated) {
-      alert("Please login to like blogs");
+      toast.error("Please login to like blogs");
+      navigate('/login');
       return;
     }
     try {
       await api.post(`/likes/blog/${blogId}`);
-    
+
       const response = await api.get("/blogs");
       setBlogs(response.data);
     } catch (err) {
       console.error("Error liking blog:", err);
-      alert("Failed to like blog");
+      toast.error("Failed to like blog");
     }
   };
 
   const handleAddBlogComment = async () => {
     if (!isAuthenticated) {
-      alert("Please login to comment");
+      toast.error("Please login to like blogs");
+      navigate('/login');
       return;
     }
     if (!newBlogComment) return;
@@ -129,7 +134,8 @@ function Home() {
 
   const handleReply = async (parentId) => {
     if (!isAuthenticated) {
-      alert("Please login to reply");
+      toast.error("Please login to reply");
+      navigate('/login');
       return;
     }
     if (!replyText) return;
@@ -312,7 +318,7 @@ function Home() {
       <LogoutConfirmationModal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
-        onConfirm={() => { setShowLogoutModal(false); logout(); }}
+        onConfirm={async () => { await logout(); setShowLogoutModal(false); }}
       />
     </div>
   );

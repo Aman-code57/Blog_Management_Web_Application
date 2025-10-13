@@ -192,7 +192,7 @@ function BlogRead() {
       <LogoutConfirmationModal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
-        onConfirm={() => { setShowLogoutModal(false); logout(); }}
+        onConfirm={async () => { await logout(); setShowLogoutModal(false); }}
       />
     </div>
   );

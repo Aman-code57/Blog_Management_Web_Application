@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../AuthContext";
 import Input from "../../../components/Input";
+import { TailSpin } from "react-loader-spinner";
 import "../../../styles/Login.css";
 
 function Login() {
@@ -77,8 +78,17 @@ function Login() {
           required
           disabled={loginLoading}
         />
-          <button type="submit" disabled={loginLoading}>
-            {loginLoading ? "Logging in..." : "Login"}
+          <button type="submit" disabled={loginLoading} style={{ position: 'relative' }}>
+            {loginLoading ? (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '8px' }}>
+                  <span style={{ color: '#fff' }}>Logging in...</span>
+                  <TailSpin height="20" width="20" color="#fff" ariaLabel="loading" style={{ marginTop: '5px' }}/>
+                </div>
+              </>
+            ) : (
+              "Login"
+            )}
           </button>
         <Link to="/forgot-password">Forgot Password?</Link>
       </form>

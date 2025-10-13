@@ -34,6 +34,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await api.post('/login', { username, password });
       const response = await api.get('/me');
+      await new Promise(resolve => setTimeout(resolve, 2000));
       setUser(response.data);
       toast.success('Login successful!');
       navigate('/');
@@ -52,6 +53,8 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       toast.success('Logout successful!');
       navigate('/');
+    } catch (error) {
+      toast.error('Logout failed. Please try again.');
     } finally {
       setLogoutLoading(false);
     }
