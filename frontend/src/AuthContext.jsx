@@ -51,6 +51,7 @@ export const AuthProvider = ({ children }) => {
     setLogoutLoading(true);
     try {
       await api.post('/logout');
+      await new Promise(resolve => setTimeout(resolve, 2000));
       setUser(null);
       toast.success('Logout successful!');
       navigate('/');
@@ -78,7 +79,7 @@ export const AuthProvider = ({ children }) => {
       width: '100%',
       height: '100%',
       backgroundColor: 'rgba(255, 255, 255, 0.8)',
-      backdropFilter: 'blur(3px)',
+      backdropFilter: 'blur(2px)',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

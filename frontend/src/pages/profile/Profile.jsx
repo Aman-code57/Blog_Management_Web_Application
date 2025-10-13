@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
 import { NavLink } from "react-router-dom";
+import { toast } from "react-toastify";
 import api from "../../utils/api";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
@@ -56,9 +57,10 @@ function Profile() {
       setEditingBlog(null);
       setEditImage(null);
       setEditVideo(null);
+      toast.success("Blog updated successfully!");
     } catch (error) {
       console.error("Error updating blog:", error);
-      alert("Failed to update blog");
+      toast.error("Failed to update blog");
     } finally {
       setSavingBlog(null);
     }
@@ -76,9 +78,10 @@ function Profile() {
       setBlogs(blogs.filter(blog => blog.id !== blogToDelete.id));
       setShowDeleteModal(false);
       setBlogToDelete(null);
+      toast.success("Blog deleted successfully!");
     } catch (error) {
       console.error("Error deleting blog:", error);
-      alert("Failed to delete blog");
+      toast.error("Failed to delete blog");
     }
   };
 
