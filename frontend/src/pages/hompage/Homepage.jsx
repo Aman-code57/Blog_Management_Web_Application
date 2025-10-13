@@ -200,6 +200,7 @@ function Home() {
               <div className="blog-content">
                 <p>{selectedBlog.content}</p>
                 <p>Author: {selectedBlog.author_username}</p>
+                <p>Created: {new Date(selectedBlog.created_at).toLocaleDateString()}</p>
                 <div className="blog-actions">
                   <button onClick={handleBlogLike} className="like-btn">
                     <FaThumbsUp />
@@ -247,6 +248,7 @@ function Home() {
                     Read More
                   </button>
                   <p>Author: {blog.author_username}</p>
+                  <p>Created: {new Date(blog.created_at).toLocaleDateString()}</p>
                   <div className="blog-actions">
                     <button onClick={() => handleLike(blog.id)} className="like-btn">
                       <FaThumbsUp />
