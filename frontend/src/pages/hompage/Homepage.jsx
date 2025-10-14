@@ -9,7 +9,7 @@ import api from "../../utils/api";
 import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import "../../styles/Homepage.css";
 import "../../styles/Layout.css";
-import { LuUndo2 } from 'react-icons/lu';
+
 
 
 function Home() {
@@ -19,16 +19,9 @@ function Home() {
   const [currentView] = useState('home');
   const [comments, setComments] = useState({});
   const [showComments, setShowComments] = useState({});
-  const [viewingBlog, setViewingBlog] = useState(false);
-  const [selectedBlog, setSelectedBlog] = useState(null);
-  const [blogComments, setBlogComments] = useState([]);
-  const [newBlogComment, setNewBlogComment] = useState('');
-  const [replyingTo, setReplyingTo] = useState(null);
-  const [replyText, setReplyText] = useState('');
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
 
-  // Pagination, sorting, and searching states
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [sortBy, setSortBy] = useState('created_at');
@@ -81,16 +74,8 @@ function Home() {
     setPage(newPage);
   };
 
-  const handleViewBlog = async (blog) => {
-    try {
-      const blogResponse = await api.get(`/blogs/${blog.id}`);
-      setSelectedBlog(blogResponse.data);
-      const commentsResponse = await api.get(`/comments/blog/${blog.id}`);
-      setBlogComments(commentsResponse.data);
-      setViewingBlog(true);
-    } catch (err) {
-      console.error("Error fetching blog details:", err);
-    }
+  const handleViewBlog = (blog) => {
+    navigate(`/blog/${blog.id}`);
   };
 
   const toggleComments = async (blogId) => {
@@ -107,168 +92,28 @@ function Home() {
     }
   };
 
-  const handleBlogLike = async () => {
-    if (!isAuthenticated) {
-      toast.error("Please login to like blogs");
-      navigate('/login');
-      return;
-    }
-    try {
-      await api.post(`/likes/blog/${selectedBlog.id}`);
-      const response = await api.get(`/blogs/${selectedBlog.id}`);
-      setSelectedBlog(response.data);
-    } catch (err) {
-      console.error("Error liking blog:", err);
-      toast.error("Failed to like blog");
-    }
-  };
-
   const handleLike = async (blogId) => {
     if (!isAuthenticated) {
-      toast.error("Please login to like blogs");
+      toast.error('Please login to like');
       navigate('/login');
       return;
     }
+
     try {
       const response = await api.post(`/likes/blog/${blogId}`);
-      setBlogs(blogs.map(blog => blog.id === blogId ? {...blog, likes_count: response.data.likes_count} : blog));
+      setBlogs(blogs.map(blog =>
+        blog.id === blogId
+          ? { ...blog, likes_count: response.data.likes_count }
+          : blog
+      ));
     } catch (err) {
-      console.error("Error liking blog:", err);
-      toast.error("Failed to like blog");
+      console.error("Error toggling like:", err);
+      toast.error('Failed to toggle like. Please try again.');
     }
   };
-
-  const handleAddBlogComment = async () => {
-    if (!isAuthenticated) {
-      toast.error("Please login to like blogs");
-      navigate('/login');
-      return;
-    }
-    if (!newBlogComment) return;
-    try {
-      await api.post(`/comments/blog/${selectedBlog.id}`, { content: newBlogComment });
-      setNewBlogComment('');
-      const commentsResponse = await api.get(`/comments/blog/${selectedBlog.id}`);
-      setBlogComments(commentsResponse.data);
-      const blogResponse = await api.get(`/blogs/${selectedBlog.id}`);
-      setSelectedBlog(blogResponse.data);
-    } catch (err) {
-      console.error("Error adding comment:", err);
-      alert("Failed to add comment");
-    }
-  };
-
-  const handleDeleteBlogComment = async (commentId) => {
-    try {
-      await api.delete(`/comments/${commentId}`);
-      const commentsResponse = await api.get(`/comments/blog/${selectedBlog.id}`);
-      setBlogComments(commentsResponse.data);
-      const blogResponse = await api.get(`/blogs/${selectedBlog.id}`);
-      setSelectedBlog(blogResponse.data);
-    } catch (err) {
-      console.error("Error deleting comment:", err);
-      alert("Failed to delete comment");
-    }
-  };
-
-  const handleReply = async (parentId) => {
-    if (!isAuthenticated) {
-      toast.error("Please login to reply");
-      navigate('/login');
-      return;
-    }
-    if (!replyText) return;
-    try {
-      await api.post(`/comments/blog/${selectedBlog.id}`, { content: replyText, parent_id: parentId });
-      setReplyText('');
-      setReplyingTo(null);
-      const commentsResponse = await api.get(`/comments/blog/${selectedBlog.id}`);
-      setBlogComments(commentsResponse.data);
-      const blogResponse = await api.get(`/blogs/${selectedBlog.id}`);
-      setSelectedBlog(blogResponse.data);
-    } catch (err) {
-      console.error("Error replying:", err);
-      alert("Failed to reply");
-    }
-  };
-
-  const renderComments = (commentsList, parentId = null) => {
-    return commentsList
-      .filter(comment => comment.parent_comment_id === parentId)
-      .map(comment => {
-        const parentComment = comment.parent_comment_id ? commentsList.find(c => c.id === comment.parent_comment_id) : null;
-        return (
-          <div key={comment.id} className="comment">
-            {parentComment && (
-              <small>Replying to: {parentComment.username}</small>
-            )}
-            <p>{comment.content}</p>
-            <small>User: {comment.username}</small>
-            {isAuthenticated && (comment.user_id === user?.id || selectedBlog.author_id === user?.id) && (
-              <button onClick={() => handleDeleteBlogComment(comment.id)} className="del-btns">Delete</button>
-            )}
-            <button onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)} className="rep-btns">Reply</button>
-            {replyingTo === comment.id && (
-              <div className="reply-form">
-                <textarea
-                  value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
-                  placeholder="Reply..."
-                />
-                <button onClick={() => handleReply(comment.id)} className="subs-btns">Submit Reply</button>
-                <button onClick={() => setReplyingTo(null)} className="cans-btns">Cancel</button>
-              </div>
-            )}
-            {renderComments(commentsList, comment.id)}
-          </div>
-        );
-      });
-  };
-
   const renderContent = () => {
     switch (currentView) {
       case 'home':
-        if (viewingBlog && selectedBlog) {
-          return (
-            <div className="blog-read-container">
-              <h1>{selectedBlog.title}</h1>
-              {selectedBlog.image_url && <img src={`http://localhost:8000${selectedBlog.image_url}`} alt={selectedBlog.title} />}
-              {selectedBlog.video_url && <video src={`http://localhost:8000${selectedBlog.video_url}`} controls />}
-              <div className="blog-contens">
-                <p>{selectedBlog.content}</p>
-                <p>Author: {selectedBlog.author_username}</p>
-                <p>Created: {new Date(selectedBlog.created_at).toLocaleDateString()}</p>
-                <div className="blog-actions">
-                  <button onClick={handleBlogLike} className="like-btn">
-                    <FaThumbsUp />
-                    <span className="sr-only"></span>
-                    {selectedBlog.likes_count || 0}
-                  </button>
-                  <button className="comment-btn">
-                    <FaComment />
-                    <span className="sr-only"></span>
-                    {selectedBlog.comments_count || 0}
-                  </button>
-                </div>
-                <div className="comments-section">
-                  {isAuthenticated && (
-                    <div className="add-comment">
-                      <textarea
-                        value={newBlogComment}
-                        onChange={(e) => setNewBlogComment(e.target.value)}
-                        placeholder="Add a comment..."
-                      />
-                      <button onClick={handleAddBlogComment} className="post-btn">Post</button>
-                    </div>
-                  )}
-                  <div className="comments-list">
-                    {renderComments(blogComments)}
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        }
         if (error) {
           return <p className="error">{error}</p>;
         }
@@ -395,9 +240,6 @@ function Home() {
       </nav>
       <div className="main-content">
         <main className="content">
-           {viewingBlog && (
-          <button onClick={() => setViewingBlog(false)} className="back-btnss"><LuUndo2/></button>
-        )}
           {renderContent()}
         </main>
       </div>

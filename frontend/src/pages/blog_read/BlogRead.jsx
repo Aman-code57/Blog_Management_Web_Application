@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
 import { FaThumbsUp, FaComment } from "react-icons/fa";
 import api from "../../utils/api";
 import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import "../../styles/BlogRead.css";
+import { toast } from 'react-toastify';
 
 
 function BlogRead() {
@@ -18,6 +19,7 @@ function BlogRead() {
   const [replyText, setReplyText] = useState('');
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.get(`/blogs/${blogId}`)
@@ -104,7 +106,8 @@ function BlogRead() {
 
   const handleReply = async (parentId) => {
     if (!isAuthenticated) {
-      alert("Please login to reply");
+      toast.error('Please login to reply');
+      navigate('/login');
       return;
     }
     if (!replyText) return;
@@ -238,7 +241,7 @@ function BlogRead() {
 }
 
   return (
-    <div className="layout-container">
+    <div className="layout-container-read">
       <nav className="navbar">
         <NavLink to="/" className="navbar-title-link"><h1 className="navbar-title">Blog Management</h1></NavLink>
           <div className="navbar-right">
@@ -271,12 +274,11 @@ function BlogRead() {
                   style={{ opacity: !isAuthenticated ? 0.5 : 1, cursor: !isAuthenticated ? 'not-allowed' : 'pointer' }}
                 >
                   <FaThumbsUp style={{ color: isLiked ? '#007bff' : 'inherit' }} />
-                  <span className="sr-only">Like</span>
+                  
                   {blog.likes_count || 0}
                 </button>
                 <button className="comment-btn">
                   <FaComment />
-                  <span className="sr-only">Comment</span>
                   {blog.comments_count || 0}
                 </button>
               </div>
