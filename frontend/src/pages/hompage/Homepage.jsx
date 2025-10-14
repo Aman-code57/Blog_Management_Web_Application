@@ -28,19 +28,58 @@ function Home() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
 
+  // Pagination, sorting, and searching states
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [sortBy, setSortBy] = useState('created_at');
+  const [order, setOrder] = useState('desc');
+  const [search, setSearch] = useState('');
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     if (currentView === 'home') {
-      api.get("/blogs")
-        .then((response) => {
-          setBlogs(response.data);
-          setError(null);
-        })
-        .catch((err) => {
-          console.error("Error fetching blogs:", err);
-          setError("Failed to load blogs. Please check if the backend is running.");
-        });
+      fetchBlogs();
     }
-  }, [currentView]);
+  }, [currentView, page, sortBy, order, search]);
+
+  const fetchBlogs = async () => {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        sort_by: sortBy,
+        order: order,
+        ...(search && { search })
+      });
+      const response = await api.get(`/blogs?${params}`);
+      setBlogs(response.data.blogs);
+      setTotalPages(response.data.total_pages);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching blogs:", err);
+      setError("Failed to load blogs. Please check if the backend is running.");
+    }
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPage(1); // Reset to first page on search
+    fetchBlogs();
+  };
+
+  const handleSortChange = (newSortBy) => {
+    setSortBy(newSortBy);
+    setPage(1); // Reset to first page on sort change
+  };
+
+  const handleOrderChange = (newOrder) => {
+    setOrder(newOrder);
+    setPage(1); // Reset to first page on order change
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
 
   const handleViewBlog = async (blog) => {
     try {
@@ -197,7 +236,7 @@ function Home() {
               <h1>{selectedBlog.title}</h1>
               {selectedBlog.image_url && <img src={`http://localhost:8000${selectedBlog.image_url}`} alt={selectedBlog.title} />}
               {selectedBlog.video_url && <video src={`http://localhost:8000${selectedBlog.video_url}`} controls />}
-              <div className="blog-content">
+              <div className="blog-contens">
                 <p>{selectedBlog.content}</p>
                 <p>Author: {selectedBlog.author_username}</p>
                 <p>Created: {new Date(selectedBlog.created_at).toLocaleDateString()}</p>
@@ -235,46 +274,99 @@ function Home() {
         if (error) {
           return <p className="error">{error}</p>;
         }
-        return blogs.length === 0 ? (
-          <p>No blogs available yet. Start by <NavLink to={isAuthenticated ? "/create-blog" : "/login"}>Add Blog</NavLink>!</p>
-        ) : (
-          <div className="blog-list">
-            {blogs.map((blog) => (
-              <div key={blog.id} className="blog-cards">
-                <div className="blog-contents">
-                  <h2>{blog.title}</h2>
-                  <p>{`${blog.content.substring(0, 100)}${blog.content.length > 100 ? '...' : ''}`}</p>
-                  <button onClick={() => handleViewBlog(blog)} className="read-more-btn">
-                    Read More
-                  </button>
-                  <p>Author: {blog.author_username}</p>
-                  <p>Created: {new Date(blog.created_at).toLocaleDateString()}</p>
-                  <div className="blog-actions">
-                    <button onClick={() => handleLike(blog.id)} className="like-btn">
-                      <FaThumbsUp />
-                      <span className="sr-only"></span>
-                      {blog.likes_count || 0}
-                    </button>
-                    <button onClick={() => toggleComments(blog.id)} className="comment-btn">
-                      <FaComment />
-                      <span className="sr-only"></span>
-                      {blog.comments_count || 0}
-                    </button>
-                  </div>
-                  {showComments[blog.id] && (
-                    <div className="comments-section">
-                      <div className="comments-list">
-                        {(comments[blog.id] || []).map((comment) => (
-                          <div key={comment.id} className="comment">
-                            <p><strong>{comment.username}:</strong> {comment.content}</p>
+        return (
+          <div>
+            {/* Search and Sort Controls */}
+            <div className="controls-container">
+              <form onSubmit={handleSearch} className="search-form">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search blogs..."
+                  className="search-input"
+                />
+                <button type="submit" className="search-btn">Search</button>
+              </form>
+              <div className="sort-controls">
+                <label>Sort by:</label>
+                <select value={sortBy} onChange={(e) => handleSortChange(e.target.value)} className="sort-select">
+                  <option value="created_at">Date</option>
+                  <option value="title">Title</option>
+                  <option value="likes">Likes</option>
+                </select>
+                <select value={order} onChange={(e) => handleOrderChange(e.target.value)} className="order-select">
+                  <option value="desc">Descending</option>
+                  <option value="asc">Ascending</option>
+                </select>
+              </div>
+            </div>
+
+            {blogs.length === 0 ? (
+              <p>No blogs available yet. Start by <NavLink to={isAuthenticated ? "/create-blog" : "/login"}>Add Blog</NavLink>!</p>
+            ) : (
+              <div>
+                <div className="blog-list">
+                  {blogs.map((blog) => (
+                    <div key={blog.id} className="blog-cards">
+                      <div className="blog-contents">
+                        <h2>{blog.title}</h2>
+                        <p>{`${blog.content.substring(0, 100)}${blog.content.length > 100 ? '...' : ''}`}</p>
+                        <button onClick={() => handleViewBlog(blog)} className="read-more-btn">
+                          Read More
+                        </button>
+                        <p>Author: {blog.author_username}</p>
+                        <p>Created: {new Date(blog.created_at).toLocaleDateString()}</p>
+                        <div className="blog-actions">
+                          <button onClick={() => handleLike(blog.id)} className="like-btn">
+                            <FaThumbsUp />
+                            <span className="sr-only"></span>
+                            {blog.likes_count || 0}
+                          </button>
+                          <button onClick={() => toggleComments(blog.id)} className="comment-btn">
+                            <FaComment />
+                            <span className="sr-only"></span>
+                            {blog.comments_count || 0}
+                          </button>
+                        </div>
+                        {showComments[blog.id] && (
+                          <div className="comments-section">
+                            <div className="comments-list">
+                              {(comments[blog.id] || []).map((comment) => (
+                                <div key={comment.id} className="comment">
+                                  <p><strong>{comment.username}:</strong> {comment.content}</p>
+                                </div>
+                              ))}
+                            </div>
                           </div>
-                        ))}
+                        )}
                       </div>
                     </div>
-                  )}
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="pagination-container">
+                  <button
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page === 1}
+                    className="pagination-btn"
+                  >
+                    Previous
+                  </button>
+                  <span className="pagination-info">
+                    Page {page} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page === totalPages}
+                    className="pagination-btn"
+                  >
+                    Next
+                  </button>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         );
       case 'add':

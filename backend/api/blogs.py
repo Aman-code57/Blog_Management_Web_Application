@@ -12,8 +12,15 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 @router.get("/")
-def get_blogs(db: Session = Depends(get_db)):
-    blogs = db.query(models.Blog).options(joinedload(models.Blog.author)).all()
+def get_blogs(
+    page: int = 1,
+    limit: int = 10,
+    sort_by: str = "created_at",
+    order: str = "desc",
+    search: str = None,
+    db: Session = Depends(get_db)
+):
+    blogs, total = blogs_crud.get_blogs_filtered(db, page, limit, sort_by, order, search)
     result = []
     for blog in blogs:
         blog_dict = blog.__dict__.copy()
@@ -21,7 +28,13 @@ def get_blogs(db: Session = Depends(get_db)):
         blog_dict["likes_count"] = likes_crud.count_likes(db, blog.id)
         blog_dict["comments_count"] = db.query(models.Comment).filter(models.Comment.blog_id == blog.id).count()
         result.append(blog_dict)
-    return result
+    return {
+        "blogs": result,
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "total_pages": (total + limit - 1) // limit
+    }
 
 
 @router.get("/user/{user_id}")

@@ -51,7 +51,7 @@ function Login() {
   return (
     <div className="page-container">
       <nav className="navbar">
-        <h1>Blog Management</h1>
+        <Link to="/" className="navbar-title-link"><h1 className="navbar-title"> Blog Management</h1></Link>
         <button onClick={() => window.location.href = "/"} className="back-button">Blogpage</button>
       </nav>
       <div className="login-container">
