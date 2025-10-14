@@ -5,7 +5,7 @@ import { FaThumbsUp, FaComment } from "react-icons/fa";
 import api from "../../utils/api";
 import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
 import "../../styles/BlogRead.css";
-import "../../styles/Layout.css";
+
 
 function BlogRead() {
   const { blogId } = useParams();
@@ -29,7 +29,6 @@ function BlogRead() {
           api.get(`/likes/blog/${blogId}`)
             .then((likeResponse) => {
               setIsLiked(likeResponse.data.is_liked);
-              // Sync likes_count if different
               if (likeResponse.data.likes_count !== response.data.likes_count) {
                 setBlog(prev => ({ ...prev, likes_count: likeResponse.data.likes_count }));
               }
@@ -200,7 +199,7 @@ function BlogRead() {
 
   if (!blog) {
     return (
-      <div className="layout-container">
+      <div className="layout-container-read">
         <nav className="navbar">
           <NavLink to="/" className="navbar-title-link"><h1 className="navbar-title">Blog Management</h1></NavLink>
           <div className="navbar-right">

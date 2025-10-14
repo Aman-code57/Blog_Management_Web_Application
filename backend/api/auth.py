@@ -64,7 +64,7 @@ def reset_password_route(request: ResetPasswordOTP, db: Session = Depends(get_db
 @router.get("/me", response_model=UserOut)
 def get_me(request: Request, db: Session = Depends(get_db)):
     current_user = get_current_user(request, db)
-    return UserOut.from_orm(current_user)
+    return UserOut.model_validate(current_user)
 
 @router.post("/logout")
 def logout(response: Response):

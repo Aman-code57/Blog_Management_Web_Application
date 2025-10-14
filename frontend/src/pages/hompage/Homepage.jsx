@@ -130,10 +130,8 @@ function Home() {
       return;
     }
     try {
-      await api.post(`/likes/blog/${blogId}`);
-
-      const response = await api.get("/blogs");
-      setBlogs(response.data);
+      const response = await api.post(`/likes/blog/${blogId}`);
+      setBlogs(blogs.map(blog => blog.id === blogId ? {...blog, likes_count: response.data.likes_count} : blog));
     } catch (err) {
       console.error("Error liking blog:", err);
       toast.error("Failed to like blog");
