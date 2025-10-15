@@ -16,18 +16,19 @@ body{
 
 }
 
-.navbars-rights {
+.navbar-right {
     display: flex;
     align-items: center;
 }
 
-.logout-btn {
+.logouts-btns {
   background-color: #0056b3;
   border: none;
   color: white;
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
+  margin-right: 10px;
 }
 
 .logout-btn:hover {
@@ -41,13 +42,15 @@ body{
 }
 
 .blog-cards {
-  background: #fff;
+  background: whitesmoke;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
+  height: 350px;
+  width: 100%;
 }
 
 .blog-cards:hover {
@@ -159,11 +162,11 @@ body{
   overflow: hidden;
   width: 100%;
 }
-.content {
+.contents {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
-  background-color: #fff;
+  background-color: white;
   width: 100%;
 }
 .controls-container {

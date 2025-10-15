@@ -40,7 +40,6 @@ export const AuthProvider = ({ children }) => {
       toast.success('Login successful!');
       navigate('/');
     } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
       throw error;
     } finally {
       setLoginLoading(false);

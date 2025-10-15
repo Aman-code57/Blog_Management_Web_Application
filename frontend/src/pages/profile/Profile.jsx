@@ -180,7 +180,7 @@ function Profile() {
               <NavLink to="/" className="navbar-link">Homepage</NavLink>
               <NavLink to="/myblogs" className="navbar-link">My Blogs</NavLink>
               <NavLink to="/create-blog" className="navbar-link">Add Blog</NavLink>
-              <button onClick={() => setShowLogoutModal(true)} className="logout-btn">Logout</button>
+              <button onClick={() => setShowLogoutModal(true)} className="logout-btner">Logout</button>
             </>
           ) : (
             <NavLink to="/login" className="navbar-link">Login</NavLink>
@@ -202,10 +202,7 @@ function Profile() {
                     <div className="blog-content">
                       {editingBlog === blog.id ? (
                         <>
-                          <input
-                            type="text"
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
+                          <input type="text" value={editTitle} onChange={(e) => setEditTitle(e.target.value)}
                             className="edit-input"
                             disabled={savingBlog === blog.id}
                           />
@@ -216,11 +213,9 @@ function Profile() {
                             disabled={savingBlog === blog.id}
                           />
                           <label htmlFor="editImageUpload">Change Image:</label>
-                          <input
-                            id="editImageUpload"
-                            type="file"
-                            accept="image/*"
+                          <input id="editImageUpload" type="file" accept="image/*"
                             onChange={(e) => setEditImage(e.target.files[0])}
+                            className="edit-image"
                             disabled={savingBlog === blog.id}
                           />
                           <label htmlFor="editVideoUpload">Change Video:</label>
@@ -229,6 +224,7 @@ function Profile() {
                             type="file"
                             accept="video/*"
                             onChange={(e) => setEditVideo(e.target.files[0])}
+                            className="edit-video"
                             disabled={savingBlog === blog.id}
                           />
                           <button onClick={() => handleSaveEdit(blog.id)} className="save-btn" disabled={savingBlog === blog.id}>

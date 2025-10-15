@@ -30,8 +30,10 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
     db_user = user_crud.get_user_by_username(db, user.username)
-    if not db_user or not db_user.password:
-        raise HTTPException(status_code=400, detail="Invalid username or password")
+    if not db_user:
+        raise HTTPException(status_code=400, detail="Invalid username")
+    if not db_user.password:
+        raise HTTPException(status_code=400, detail="Invalid password")
 
     import bcrypt
     if not bcrypt.checkpw(user.password.encode('utf-8'), db_user.password.encode('utf-8')):

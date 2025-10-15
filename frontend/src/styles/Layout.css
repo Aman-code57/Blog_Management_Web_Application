@@ -55,15 +55,9 @@
   border-radius: 4px;
 }
 
-.main-content {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-  width: 100.%;
-}
 .sidebar {
   width: 200px;
-  background-color: #f8f9fa;
+  background-color: #f8f9;
   padding: 1rem;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
   overflow-y: auto;

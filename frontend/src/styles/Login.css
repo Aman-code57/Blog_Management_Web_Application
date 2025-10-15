@@ -9,7 +9,7 @@
   color: white;
   padding: 1rem;
   text-align: center;
-  width: 97.8vw;
+  width: 97.9vw;
 }
 
 .navbar h1 {
@@ -104,3 +104,7 @@
   text-align: left;
   margin-top: -200px;
 } */
+ .back-button{
+  color: white;
+  background-color: #007bff;
+ }

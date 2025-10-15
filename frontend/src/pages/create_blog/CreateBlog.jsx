@@ -20,8 +20,20 @@ function CreateBlog() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (title.length > 50) {
-      setError("Title must be 50 characters or less");
+    if (!title.trim()) {
+      setError("Title is required");
+      return;
+    }
+    if (title.length < 3 || title.length > 60) {
+      setError("Title must be between 3 and 60 characters");
+      return;
+    }
+    if (!content.trim()) {
+      setError("Content is required");
+      return;
+    }
+    if (content.length > 200) {
+      setError("Content must be up to 200 characters");
       return;
     }
 
@@ -81,7 +93,7 @@ function CreateBlog() {
               <NavLink to="/" className="navbar-link">Homepage</NavLink>
               <NavLink to="/myblogs" className="navbar-link">My Blogs</NavLink>
               <NavLink to="/create-blog" className="navbar-link">Add Blog</NavLink>
-              <button onClick={() => setShowLogoutModal(true)} className="logout-btn">Logout</button>
+              <button onClick={() => setShowLogoutModal(true)} className="logout-btned">Logout</button>
             </>
           ) : (
             <NavLink to="/login" className="navbar-link">Login</NavLink>
@@ -93,8 +105,8 @@ function CreateBlog() {
           <div className="create-blog-container">
             <h2>Create New Blog</h2>
             <form onSubmit={handleSubmit}>
-              <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength="50" required disabled={creating}/>
-              <textarea type="description" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} required disabled={creating}/>
+              <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength="60" />
+              <textarea type="description" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} maxLength="200" />
 
               <label htmlFor="imageUpload">Upload Image:</label>
               <input id="imageUpload" type="file" accept="image/*" onChange={handleImageChange} disabled={creating}/>
@@ -105,7 +117,7 @@ function CreateBlog() {
               <button type="submit" disabled={creating}>
                 {creating ? "Creating..." : "Create Blog"}
               </button>
-              {error && <p className="error">{error}</p>}
+              {error && <span className="error">{error}</span>}
             </form>
 
           </div>

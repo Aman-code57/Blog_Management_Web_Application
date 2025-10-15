@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../../AuthContext";
 import Input from "../../../components/Input";
 import { TailSpin } from "react-loader-spinner";
 import "../../../styles/Login.css";
+import { toast } from "react-toastify";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -12,6 +13,8 @@ function Login() {
   const [passwordError, setPasswordError] = useState("");
   const [error, setError] = useState("");
   const { login, loginLoading } = useAuth();
+  const usernameRef = useRef(null);
+  const passwordRef = useRef(null);
 
   const validateUsername = () => {
     if (!username.trim()) {
@@ -35,47 +38,71 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); 
+    setError("");
     const isUsernameValid = validateUsername();
     const isPasswordValid = validatePassword();
-    if (!isUsernameValid || !isPasswordValid) {
+    if (!isUsernameValid) {
+      usernameRef.current?.focus();
+      toast.error("Please fill the required field in the form");
+      return;
+    }
+    if (!isPasswordValid) {
+      passwordRef.current?.focus();
+      toast.error("Please fill the required field in the form");
       return;
     }
     try {
-      await login(username, password);
-    } catch (e) {
-      setError(e.response?.data?.detail || "An error occurred during login");
-    }
+        await login(username, password);
+      } catch (e) {
+        const message = e.response?.data?.detail || "An error occurred during login";
+
+        if (message.toLowerCase().includes("username and password") ||
+            message.toLowerCase().includes("username or password")) {
+            setUsernameError("Incorrect username");
+            setPasswordError("Incorrect password");
+            usernameRef.current?.focus();
+          } else if (message.toLowerCase().includes("username")) {
+            setUsernameError("Incorrect username");
+            usernameRef.current?.focus();
+          } else if (message.toLowerCase().includes("password")) {
+            setPasswordError("Incorrect password");
+            passwordRef.current?.focus();
+          } else {
+            setError(message);
+          }
+
+        toast.error(message);
+      }
   };
 
   return (
     <div className="page-container">
       <nav className="navbar">
         <Link to="/" className="navbar-title-link"><h1 className="navbar-title"> Blog Management</h1></Link>
-        <button onClick={() => window.location.href = "/"} className="back-button">Blogpage</button>
+        <button onClick={() => window.location.href = "/"} className="back-button">BlogPage</button>
       </nav>
       <div className="login-container">
         <h2>Login</h2>
-        {error && <p className="error-message" style={{color: 'red'}}>{error}</p>}
+        <span>{error && <p className="error-messages">{error}</p>}</span>
       <form onSubmit={handleSubmit}>
         <Input
+          ref={usernameRef}
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           onBlur={validateUsername}
           error={usernameError}
-          required
           disabled={loginLoading}
         />
         <Input
+          ref={passwordRef}
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onBlur={validatePassword}
           error={passwordError}
-          required
           disabled={loginLoading}
         />
           <button type="submit" disabled={loginLoading} style={{ position: 'relative' }}>

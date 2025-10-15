@@ -93,9 +93,27 @@
 }
 
 .blog-content p {
-  margin-bottom: 5px;
+  margin-top: 80px;
 }
 
+
+.reply-from{
+  background-color: white;
+  color: black;
+}
+.comments-section h3{
+  color: black;
+  background-color: white;
+  font-size: large;
+}
+.add-comment{
+  color: black;
+  background-color: white;
+}
+.comments-list{
+  color: black;
+
+}
 /* .back-btns{
   background-color: #007bff;;
   color: white;

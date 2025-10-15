@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import desc, asc, or_
+from sqlalchemy import desc, asc, or_ , func
 from models import Blog, Like, Comment
 
 def create_blog(db: Session, title, content, image_url, video_url, user_id):
@@ -15,11 +15,9 @@ def get_all_blogs(db: Session):
 def get_blogs_filtered(db: Session, page: int = 1, limit: int = 10, sort_by: str = 'created_at', order: str = 'desc', search: str = None):
     query = db.query(Blog)
 
-    # Apply search filter
     if search:
         query = query.filter(or_(Blog.title.ilike(f'%{search}%'), Blog.content.ilike(f'%{search}%')))
 
-    # Apply sorting
     if sort_by == 'title':
         order_func = desc if order == 'desc' else asc
         query = query.order_by(order_func(Blog.title))
@@ -27,16 +25,15 @@ def get_blogs_filtered(db: Session, page: int = 1, limit: int = 10, sort_by: str
         order_func = desc if order == 'desc' else asc
         query = query.order_by(order_func(Blog.created_at))
     elif sort_by == 'likes':
-        # For likes, we need to join with likes table and count
-        query = query.outerjoin(Like).group_by(Blog.id).order_by(desc(db.func.count(Like.id)) if order == 'desc' else asc(db.func.count(Like.id)))
+        order_func = desc if order == 'desc' else asc
+        query = query.outerjoin(Like).group_by(Blog.id).order_by(order_func(func.count(Like.id)))
     else:
         query = query.order_by(desc(Blog.created_at))
 
-    # Apply pagination
     offset = (page - 1) * limit
     blogs = query.offset(offset).limit(limit).all()
 
-    # Get total count for pagination
+  
     total_query = db.query(Blog)
     if search:
         total_query = total_query.filter(or_(Blog.title.ilike(f'%{search}%'), Blog.content.ilike(f'%{search}%')))

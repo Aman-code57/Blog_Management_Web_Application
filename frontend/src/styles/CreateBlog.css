@@ -73,6 +73,15 @@ form label {
   padding: 10px;
   background-color: #fff;
 }
+.logout-btned{
+  background-color: #0056b3;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
 
 
 

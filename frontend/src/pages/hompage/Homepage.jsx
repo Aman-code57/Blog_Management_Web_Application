@@ -45,7 +45,7 @@ function Home() {
         ...(search && { search })
       });
       const response = await api.get(`/blogs?${params}`);
-      setBlogs(response.data.blogs);
+      setBlogs(sortBlogs(response.data.blogs, sortBy, order));
       setTotalPages(response.data.total_pages);
       setError(null);
     } catch (err) {
@@ -56,18 +56,18 @@ function Home() {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setPage(1); // Reset to first page on search
+    setPage(1); 
     fetchBlogs();
   };
 
   const handleSortChange = (newSortBy) => {
     setSortBy(newSortBy);
-    setPage(1); // Reset to first page on sort change
+    setPage(1); 
   };
 
   const handleOrderChange = (newOrder) => {
     setOrder(newOrder);
-    setPage(1); // Reset to first page on order change
+    setPage(1); 
   };
 
   const handlePageChange = (newPage) => {
@@ -92,6 +92,27 @@ function Home() {
     }
   };
 
+  const sortBlogs = (blogs, sortBy, order) => {
+    return [...blogs].sort((a, b) => {
+      let aVal, bVal;
+      if (sortBy === 'created_at') {
+        aVal = new Date(a.created_at);
+        bVal = new Date(b.created_at);
+      } else if (sortBy === 'title') {
+        aVal = a.title.toLowerCase();
+        bVal = b.title.toLowerCase();
+      } else if (sortBy === 'likes') {
+        aVal = a.likes_count || 0;
+        bVal = b.likes_count || 0;
+      }
+      if (order === 'asc') {
+        return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+      } else {
+        return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+      }
+    });
+  };
+
   const handleLike = async (blogId) => {
     if (!isAuthenticated) {
       toast.error('Please login to like');
@@ -100,12 +121,8 @@ function Home() {
     }
 
     try {
-      const response = await api.post(`/likes/blog/${blogId}`);
-      setBlogs(blogs.map(blog =>
-        blog.id === blogId
-          ? { ...blog, likes_count: response.data.likes_count }
-          : blog
-      ));
+      await api.post(`/likes/blog/${blogId}`);
+      fetchBlogs();
     } catch (err) {
       console.error("Error toggling like:", err);
       toast.error('Failed to toggle like. Please try again.');
@@ -231,7 +248,7 @@ function Home() {
               <NavLink to="/" className="navbar-link">Homepage</NavLink>
               <NavLink to="/myblogs" className="navbar-link">My Blogs</NavLink>
               <NavLink to="/create-blog" className="navbar-link">Add Blog</NavLink>
-              <button onClick={() => setShowLogoutModal(true)} className="logout-btn">Logout</button>
+              <button onClick={() => setShowLogoutModal(true)} className="logouts-btns">Logout</button>
             </>
           ) : (
             <><NavLink to="/login" className="navbar-link">Login</NavLink><NavLink to="/Register" className="navbar-link">Register</NavLink></>
@@ -239,7 +256,7 @@ function Home() {
         </div>
       </nav>
       <div className="main-content">
-        <main className="content">
+        <main className="contents">
           {renderContent()}
         </main>
       </div>

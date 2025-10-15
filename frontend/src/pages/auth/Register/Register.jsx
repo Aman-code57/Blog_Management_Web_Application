@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Input from "../../../components/Input";
@@ -10,6 +10,9 @@ function Register() {
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState({ username: "", email: "", password: "" });
   const navigate = useNavigate();
+  const usernameRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
   const validateField = (name, value) => {
     let error = "";
@@ -49,8 +52,19 @@ function Register() {
     const isEmailValid = validateField("email", email);
     const isPasswordValid = validateField("password", password);
 
-    if (!isUsernameValid || !isEmailValid || !isPasswordValid) {
-      toast.error("Please fix the errors in the form");
+    if (!isUsernameValid) {
+      usernameRef.current?.focus();
+      toast.error("Please fill the required field in the form");
+      return;
+    }
+    if (!isEmailValid) {
+      emailRef.current?.focus();
+      toast.error("Please fill the required field in the form");
+      return;
+    }
+    if (!isPasswordValid) {
+      passwordRef.current?.focus();
+      toast.error("Please fill the required field in the form");
       return;
     }
 
@@ -84,6 +98,7 @@ function Register() {
         <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <Input
+          ref={usernameRef}
           type="text"
           name="username"
           placeholder="Username"
@@ -93,6 +108,7 @@ function Register() {
           error={fieldErrors.username}
         />
         <Input
+          ref={emailRef}
           type="email"
           name="email"
           placeholder="Email"
@@ -102,6 +118,7 @@ function Register() {
           error={fieldErrors.email}
         />
         <Input
+          ref={passwordRef}
           type="password"
           name="password"
           placeholder="Password"

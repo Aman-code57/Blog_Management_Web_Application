@@ -1,5 +1,6 @@
 .input-wrapper {
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .input-field {
@@ -21,7 +22,9 @@
 } */
 
 .input-error-message {
-  color: #dc3545;
+  color: rgb(200, 0, 0);
   font-size: small;
-  margin-bottom: 900px;
+  position: absolute;
+  margin-top: 40px;
+  left: 0;
 }
