@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../AuthContext";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
+import { TailSpin } from "react-loader-spinner";
 import api from "../../utils/api";
 import DeleteConfirmationModal from "../../components/DeleteConfirmationModal";
 import LogoutConfirmationModal from "../../components/LogoutConfirmationModal";
@@ -25,6 +26,8 @@ function Profile() {
   const [blogToDelete, setBlogToDelete] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [savingBlog, setSavingBlog] = useState(null);
+  const [deletingBlog, setDeletingBlog] = useState(null);
+  const [pageLoading, setPageLoading] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
@@ -45,6 +48,7 @@ function Profile() {
 
   const handleSaveEdit = async (blogId) => {
     setSavingBlog(blogId);
+    setPageLoading(true);
     const formData = new FormData();
     formData.append("title", editTitle);
     formData.append("content", editContent);
@@ -63,6 +67,7 @@ function Profile() {
       toast.error("Failed to update blog");
     } finally {
       setSavingBlog(null);
+      setPageLoading(false);
     }
   };
 
@@ -73,6 +78,8 @@ function Profile() {
 
   const confirmDelete = async () => {
     if (!blogToDelete) return;
+    setDeletingBlog(blogToDelete.id);
+    setPageLoading(true);
     try {
       await api.delete(`/blogs/${blogToDelete.id}`);
       setBlogs(blogs.filter(blog => blog.id !== blogToDelete.id));
@@ -82,6 +89,9 @@ function Profile() {
     } catch (error) {
       console.error("Error deleting blog:", error);
       toast.error("Failed to delete blog");
+    } finally {
+      setDeletingBlog(null);
+      setPageLoading(false);
     }
   };
 
@@ -228,7 +238,14 @@ function Profile() {
                             disabled={savingBlog === blog.id}
                           />
                           <button onClick={() => handleSaveEdit(blog.id)} className="save-btn" disabled={savingBlog === blog.id}>
-                            {savingBlog === blog.id ? "Saving..." : "Save"}
+                            {savingBlog === blog.id ? (
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                <TailSpin height="16" width="16" color="#fff" ariaLabel="loading" />
+                                <span>Saving...</span>
+                              </div>
+                            ) : (
+                              "Save"
+                            )}
                           </button>
                           <button onClick={() => setEditingBlog(null)} className="cancel-btn" disabled={savingBlog === blog.id}>Cancel</button>
                         </>
@@ -286,12 +303,21 @@ function Profile() {
         onClose={closeDeleteModal}
         onConfirm={confirmDelete}
         blogTitle={blogToDelete?.title || ''}
+        loading={deletingBlog === blogToDelete?.id}
       />
       <LogoutConfirmationModal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
         onConfirm={async () => { await logout(); setShowLogoutModal(false); }}
       />
+      {pageLoading && (
+        <div className="page-loading-overlay">
+          <div className="loading-content">
+            <TailSpin height="50" width="50" color="#007bff" ariaLabel="loading" />
+            <p>Loading...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

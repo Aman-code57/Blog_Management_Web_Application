@@ -129,14 +129,14 @@ body{
   padding: 5px 10px;
 }
 .like-btn{
-  background-color: royalblue;
-  color: white;
+  background-color: white;
+  color: lightgrey;
   border-radius: 70px;
  
 }
 .comment-btn{
-  background-color: royalblue;
-  color: white;
+  background-color: white;
+  color: lightgray;
   border-radius: 70px;
 }
 .like-btn:hover{

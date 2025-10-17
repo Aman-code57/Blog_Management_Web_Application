@@ -21,6 +21,10 @@ function Register() {
         error = "Username is required";
       } else if (value.trim().length < 3) {
         error = "Username must be at least 3 characters";
+      } else if (value.trim().length > 100) {
+        error = "Username must be at most 100 characters";
+      } else if (!/^[a-zA-Z0-9_-]+$/.test(value.trim())) {
+        error = "Username can only contain letters, numbers, underscores, and hyphens";
       }
     } else if (name === "email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,6 +38,14 @@ function Register() {
         error = "Password is required";
       } else if (value.length < 6) {
         error = "Password must be at least 6 characters";
+      } else if (!/[A-Z]/.test(value)) {
+        error = "Password must contain at least one uppercase letter";
+      } else if (!/[a-z]/.test(value)) {
+        error = "Password must contain at least one lowercase letter";
+      } else if (!/\d/.test(value)) {
+        error = "Password must contain at least one digit";
+      } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+        error = "Password must contain at least one special character";
       }
     }
     setFieldErrors((prev) => ({ ...prev, [name]: error }));
@@ -97,33 +109,25 @@ function Register() {
       <div className="register-container">
         <h2>Register</h2>
       <form onSubmit={handleSubmit}>
-        <Input
-          ref={usernameRef}
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+        <Input ref={usernameRef} type="text" name="username" placeholder="Username" value={username} onChange={(e) => {
+          setUsername(e.target.value);
+          validateField("username", e.target.value);
+        }}
           onBlur={handleBlur}
           error={fieldErrors.username}
         />
-        <Input
-          ref={emailRef}
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+        <Input ref={emailRef} type="email" name="email" placeholder="Email" value={email} onChange={(e) => {
+          setEmail(e.target.value);
+          validateField("email", e.target.value);
+        }}
           onBlur={handleBlur}
           error={fieldErrors.email}
         />
-        <Input
-          ref={passwordRef}
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+        <Input ref={passwordRef} type="password" name="password" placeholder="Password" value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            validateField("password", e.target.value);
+          }}
           onBlur={handleBlur}
           error={fieldErrors.password}
         />

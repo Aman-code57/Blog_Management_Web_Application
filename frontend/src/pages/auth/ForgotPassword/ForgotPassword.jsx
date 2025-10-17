@@ -59,13 +59,7 @@ const ForgotPassword = () => {
             <label htmlFor="email">
               Email <span className="required">*</span>
             </label>
-            <Input
-              ref={emailRef}
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Enter your registered email"
-              value={email}
+            <Input ref={emailRef} type="email" id="email" name="email" placeholder="Enter your registered email" value={email}
               onChange={(e) => setEmail(e.target.value)}
               onBlur={(e) => setError(validateEmail(e.target.value))}
               error={error}

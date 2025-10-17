@@ -19,12 +19,11 @@ router = APIRouter(prefix="", tags=["Users"])
 
 @router.post("/register", response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
-    if user_crud.get_user_by_username(db, user.username):
-        raise HTTPException(status_code=400, detail="Username already exists")
-    if user_crud.get_user_by_email(db, user.email):
-        raise HTTPException(status_code=400, detail="Email already exists")
-    new_user = user_crud.create_user(db, user.username, user.email, user.password)
-    return new_user
+    try:
+        new_user = user_crud.create_user(db, user.username, user.email, user.password)
+        return new_user
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.post("/login")
@@ -32,8 +31,6 @@ def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
     db_user = user_crud.get_user_by_username(db, user.username)
     if not db_user:
         raise HTTPException(status_code=400, detail="Invalid username")
-    if not db_user.password:
-        raise HTTPException(status_code=400, detail="Invalid password")
 
     import bcrypt
     if not bcrypt.checkpw(user.password.encode('utf-8'), db_user.password.encode('utf-8')):

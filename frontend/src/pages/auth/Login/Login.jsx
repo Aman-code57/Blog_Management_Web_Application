@@ -20,7 +20,13 @@ function Login() {
     if (!username.trim()) {
       setUsernameError("Username is required");
       return false;
-    } else {
+    } else if (username.trim().length < 3) {
+      setUsernameError("Username must be at least 3 characters");
+      return false;
+    } else if (username.trim().length > 100) {
+      setUsernameError("Username must be at most 100 characters");
+      return false;
+    }  else {
       setUsernameError("");
       return true;
     }
@@ -85,26 +91,10 @@ function Login() {
         <h2>Login</h2>
         <span>{error && <p className="error-messages">{error}</p>}</span>
       <form onSubmit={handleSubmit}>
-        <Input
-          ref={usernameRef}
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          onBlur={validateUsername}
-          error={usernameError}
-          disabled={loginLoading}
-        />
-        <Input
-          ref={passwordRef}
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onBlur={validatePassword}
-          error={passwordError}
-          disabled={loginLoading}
-        />
+        <Input ref={usernameRef} type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}
+          onBlur={validateUsername} error={usernameError} disabled={loginLoading}/>
+        <Input ref={passwordRef} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}
+          onBlur={validatePassword} error={passwordError} disabled={loginLoading}/>
           <button type="submit" disabled={loginLoading} style={{ position: 'relative' }}>
             {loginLoading ? (
               <>

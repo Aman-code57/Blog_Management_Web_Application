@@ -17,7 +17,17 @@ function BlogRead() {
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
+
+  const validateText = (text) => {
+    if (text.length > 2000) return false;
+    const lines = text.split('\n');
+    for (let line of lines) {
+      if (line.length > 40) return false;
+    }
+    return true;
+  };
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showReplies, setShowReplies] = useState({});
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -129,30 +139,54 @@ function BlogRead() {
     return commentsList
       .filter(comment => comment.parent_comment_id === parentId)
       .map(comment => {
+        const replies = commentsList.filter(c => c.parent_comment_id === comment.id);
+        const isShowingReplies = showReplies[comment.id];
         const parentComment = comment.parent_comment_id ? commentsList.find(c => c.id === comment.parent_comment_id) : null;
         return (
-          <div key={comment.id} className="comment">
-            {parentComment && (
-              <small>Replying to: {parentComment.username}</small>
-            )}
-            <p>{comment.content}</p>
-            <small>User: {comment.username}</small>
-            {isAuthenticated && (comment.user_id === user?.id || blog.author_id === user?.id) && (
-              <button onClick={() => handleDeleteComment(comment.id)}className="del-btns">Delete</button>
-            )}
-            <button onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}className="rep-btns">Reply</button>
-            {replyingTo === comment.id && (
-              <div className="reply-form">
-                <textarea
-                  value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
-                  placeholder="Reply..."
-                />
-                <button onClick={() => handleReply(comment.id)}className="subs-btns">Submit Reply</button>
-                <button onClick={() => setReplyingTo(null)}className="cans-btns">Cancel</button>
+          <div key={comment.id} className="comment-container">
+            <div className="comment-main">
+              {parentComment && (
+                <small>Replying to: {parentComment.username}</small>
+              )}
+              <div className="username-comment">
+               {comment.username}: {comment.content}
+              </div>
+              {isAuthenticated && (comment.user_id === user?.id || blog.author_id === user?.id) && (
+                <button onClick={() => handleDeleteComment(comment.id)} className="del-btns">Delete</button>
+              )}
+              {replies.length > 0 && (
+                <button onClick={() => setShowReplies(prev => ({ ...prev, [comment.id]: !prev[comment.id] }))} className="show-replies-btn">
+                  {isShowingReplies ? 'Hide Replies' : `Show Replies (${replies.length})`}
+                </button>
+              )}
+              {isAuthenticated && (
+                <>
+                  <button onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)} className="rep-btns">Reply</button>
+                  {replyingTo === comment.id && (
+                    <div className="reply-form">
+                      <textarea
+                        value={replyText}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (validateText(value)) {
+                            setReplyText(value);
+                          }
+                        }}
+                        placeholder="Reply..."
+                        maxLength="2000"
+                      />
+                      <button onClick={() => handleReply(comment.id)} className="subs-btns">Submit Reply</button>
+                      <button onClick={() => setReplyingTo(null)} className="cans-btns">Cancel</button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+            {isShowingReplies && replies.length > 0 && (
+              <div className="replies">
+                {renderComments(commentsList, comment.id)}
               </div>
             )}
-            {renderComments(commentsList, comment.id)}
           </div>
         );
       });
@@ -263,7 +297,7 @@ function BlogRead() {
             <h1>{blog.title}</h1>
             {blog.image_url && <img src={`http://localhost:8000${blog.image_url}`} alt={blog.title} />}
             {blog.video_url && <video src={`http://localhost:8000${blog.video_url}`} controls />}
-            <div className="blog-content">
+            <div className="blogs-contents">
               <p>{blog.content}</p>
               <p>Author: {blog.author_username}</p>
               <div className="blog-actions">
@@ -288,8 +322,14 @@ function BlogRead() {
                   <div className="add-comment">
                     <textarea
                       value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (validateText(value)) {
+                          setNewComment(value);
+                        }
+                      }}
                       placeholder="Add a comment..."
+                      maxLength="2000"
                     />
                     <button onClick={handleAddComment} className="post-btn">Post</button>
                   </div>

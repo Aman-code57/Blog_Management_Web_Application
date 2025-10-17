@@ -12,7 +12,10 @@ function CreateBlog() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [video, setVideo] = useState(null);
-  const [error, setError] = useState("");
+  const [titleError, setTitleError] = useState("");
+  const [contentError, setContentError] = useState("");
+  const [imageError, setImageError] = useState("");
+  const [videoError, setVideoError] = useState("");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [creating, setCreating] = useState(false);
   const navigate = useNavigate();
@@ -20,22 +23,29 @@ function CreateBlog() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let hasError = false;
+    setTitleError("");
+    setContentError("");
+    setImageError("");
+    setVideoError("");
+
     if (!title.trim()) {
-      setError("Title is required");
-      return;
+      setTitleError("Title is required");
+      hasError = true;
+    } else if (title.length < 3 || title.length > 60) {
+      setTitleError("Title must be between 3 and 60 characters");
+      hasError = true;
     }
-    if (title.length < 3 || title.length > 60) {
-      setError("Title must be between 3 and 60 characters");
-      return;
-    }
+
     if (!content.trim()) {
-      setError("Content is required");
-      return;
+      setContentError("Content is required");
+      hasError = true;
+    } else if (content.length > 1000) {
+      setContentError("Content must be up to 200 characters");
+      hasError = true;
     }
-    if (content.length > 200) {
-      setError("Content must be up to 200 characters");
-      return;
-    }
+
+    if (hasError) return;
 
     setCreating(true);
     const formData = new FormData();
@@ -50,7 +60,6 @@ function CreateBlog() {
       navigate("/");
     } catch (err) {
       console.error("Error creating blog:", err);
-      setError(err.response?.data?.detail || "Failed to create blog");
       toast.error("Failed to create blog. Please try again.");
     } finally {
       setCreating(false);
@@ -61,12 +70,20 @@ function CreateBlog() {
     const file = e.target.files[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
-        setError("Please select a valid image file");
+        toast.error("Please select a valid image file");
         setImage(null);
+        setImageError("Invalid image file type");
+      } else if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast.error("Image file size must be less than 5MB");
+        setImage(null);
+        setImageError("Image file size exceeds 5MB");
       } else {
-        setError("");
         setImage(file);
+        setImageError("");
       }
+    } else {
+      setImage(null);
+      setImageError("");
     }
   };
 
@@ -74,12 +91,20 @@ function CreateBlog() {
     const file = e.target.files[0];
     if (file) {
       if (!file.type.startsWith("video/")) {
-        setError("Please select a valid video file");
+        toast.error("Please select a valid video file");
         setVideo(null);
+        setVideoError("Invalid video file type");
+      } else if (file.size > 50 * 1024 * 1024) { // 50MB limit
+        toast.error("Video file size must be less than 50MB");
+        setVideo(null);
+        setVideoError("Video file size exceeds 50MB");
       } else {
-        setError("");
         setVideo(file);
+        setVideoError("");
       }
+    } else {
+      setVideo(null);
+      setVideoError("");
     }
   };
 
@@ -105,11 +130,18 @@ function CreateBlog() {
           <div className="create-blog-container">
             <h2>Create New Blog</h2>
             <form onSubmit={handleSubmit}>
-              <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength="60" />
-              <textarea type="description" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} maxLength="200" />
+              <div>
+                <input type="text" className="title" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength="60" />
+                <span className={`errorred ${titleError ? 'visible' : ''}`}>{titleError || ' '}</span>
+              </div>
+              <div>
+                <textarea type="description" className="description" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} maxLength="1000" />
+                <span className={`errorred ${contentError ? 'visible' : ''}`}>{contentError || ' '}</span>
+              </div>
 
               <label htmlFor="imageUpload">Upload Image:</label>
               <input id="imageUpload" type="file" accept="image/*" onChange={handleImageChange} disabled={creating}/>
+             
 
               <label htmlFor="videoUpload">Upload Video:</label>
               <input id="videoUpload" type="file" accept="video/*" onChange={handleVideoChange} disabled={creating}/>
@@ -117,7 +149,6 @@ function CreateBlog() {
               <button type="submit" disabled={creating}>
                 {creating ? "Creating..." : "Create Blog"}
               </button>
-              {error && <span className="error">{error}</span>}
             </form>
 
           </div>

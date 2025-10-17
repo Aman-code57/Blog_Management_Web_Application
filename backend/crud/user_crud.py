@@ -1,17 +1,23 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func, text
+from sqlalchemy.exc import IntegrityError
 from models import User
 from core.security import get_password_hash
 import datetime
 
 def create_user(db: Session, username: str, email: str, password: str):
-    new_user = User(username=username, email=email, password=get_password_hash(password))
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+    try:
+        new_user = User(username=username, email=email, password=get_password_hash(password))
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return new_user
+    except IntegrityError:
+        db.rollback()
+        raise ValueError("Username or email already exists")
 
 def get_user_by_username(db: Session, username: str):
-    return db.query(User).filter(User.username == username).first()
+    return db.query(User).filter(text("username = :username COLLATE utf8mb4_bin")).params(username=username).first()
 
 def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()

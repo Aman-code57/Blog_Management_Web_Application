@@ -1,5 +1,6 @@
-# TODO for Adding Validation to CreateBlog.jsx
+# TODO: Add Active State for Liked Blogs on Homepage
 
-- [x] Update title input maxLength from "50" to "60"
-- [x] Add maxLength="200" to content textarea
-- [x] Modify handleSubmit function: Add checks for title (required, 3-60 characters) and content (required, up to 200 characters), set appropriate error messages
+- [x] Modify backend/api/blogs.py to include is_liked field in the blogs response
+- [x] Update backend/schemas/blogs_schema.py to include the is_liked field
+- [x] Update frontend/src/pages/hompage/Homepage.jsx to use is_liked for button class
+- [x] Update frontend/src/styles/Homepage.css to style the liked button

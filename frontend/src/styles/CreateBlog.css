@@ -5,6 +5,8 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #f9f9f9;
+  margin-top: 20px;
+  
 }
 
 .create-blog-container h2 {
@@ -16,10 +18,10 @@
 .create-blog-container form {
   display: flex;
   flex-direction: column;
+  
 }
 
-.create-blog-container input[type="text"],
-.create-blog-container textarea,
+
 .create-blog-container input[type="file"] {
   margin-bottom: 15px;
   padding: 10px;
@@ -28,6 +30,8 @@
   font-size: 16px;
   background-color: white;
   color: black;
+  width: 90%;
+  
 }
 
 .create-blog-container textarea {
@@ -49,10 +53,19 @@
   background-color: #218838;
 }
 
-.error {
+.errorred {
   color: red;
   text-align: center;
-  margin-top: 10px;
+  font-size: 13px;
+  height: 5px;           /* fixed height */
+  margin-top: -1px;
+  overflow: hidden;
+  visibility: hidden;
+  /* margin-top: -0px; */
+}
+
+.errorred.visible {
+  visibility: visible;
 }
 
 form label {
@@ -82,7 +95,25 @@ form label {
   cursor: pointer;
   margin-right: 10px;
 }
-
-
-
+.title{
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  width: 90%;
+}
+.description{
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  color: black;
+  width: 90%;
+  height: 18px;
+  margin-top: 20px;
+}
 

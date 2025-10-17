@@ -87,13 +87,16 @@
   margin-bottom: 20px;
 }
 
-.blog-content {
+.blogs-contents {
   font-size: 1.2em;
   line-height: 1.6;
 }
 
-.blog-content p {
-  margin-top: 80px;
+.blogs-contents p {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: -10px;
+  margin-top: 90px;
 }
 
 
@@ -188,4 +191,51 @@
 .blog-read-container h1{
   color: rgb(20, 18, 18);
   font-size: x-large;
+}
+textarea{
+  background-color: white;
+  color: black;
+  width: 40%;
+}
+.username-comment{
+ font-size: 0.9rem;
+ color: black;
+ font-family: Arial, Helvetica, sans-serif ;
+ margin-top: 10px;
+ width: 30%;
+
+}
+small{
+  font-size: 1rem;
+  color: black;
+}
+
+.comment-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.comment-main {
+  flex: 1;
+}
+
+.replies {
+  flex: 1;
+  margin-left: 20px;
+  border-left: 2px solid #ccc;
+  padding-left: 10px;
+}
+
+.show-replies-btn {
+  background-color: white;
+  font-size: small;
+  color: black;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.show-replies-btn:hover {
+  text-decoration: underline;
 }
