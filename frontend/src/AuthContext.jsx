@@ -33,10 +33,12 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     setLoginLoading(true);
     try {
-      await api.post('/login', { username, password });
-      const response = await api.get('/me');
+      const response = await api.post('/login', { username, password });
+      const { access_token } = response.data;
+      localStorage.setItem('access_token', access_token);
+      const userResponse = await api.get('/me');
       await new Promise(resolve => setTimeout(resolve, 2000));
-      setUser(response.data);
+      setUser(userResponse.data);
       toast.success('Login successful!');
       navigate('/');
     } catch (error) {
@@ -49,6 +51,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLogoutLoading(true);
     try {
+      localStorage.removeItem('access_token');
       await api.post('/logout');
       await new Promise(resolve => setTimeout(resolve, 2000));
       setUser(null);

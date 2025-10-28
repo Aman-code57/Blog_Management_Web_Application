@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer
 from database import Base, engine
 from api.auth import router as user_router
 from api.blogs import router as blog_router

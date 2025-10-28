@@ -27,7 +27,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/login")
-def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
+def login(user: UserLogin, db: Session = Depends(get_db)):
     db_user = user_crud.get_user_by_username(db, user.username)
     if not db_user:
         raise HTTPException(status_code=400, detail="Invalid username")
@@ -37,8 +37,7 @@ def login(user: UserLogin, response: Response, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Incorrect password")
 
     token = create_access_token(data={"sub": db_user.username, "user_id": db_user.id})
-    response.set_cookie(key="access_token", value=token, httponly=True, max_age=7200, secure=False, samesite="lax")
-    return {"message": "Login successful"}
+    return {"access_token": token, "token_type": "bearer"}
 
 @router.post("/send-otp")
 async def send_otp_route(request: SendOTP, db: Session = Depends(get_db)):
@@ -61,8 +60,7 @@ def reset_password_route(request: ResetPasswordOTP, db: Session = Depends(get_db
     return reset_password(db, request.reset_token, request.new_password)
 
 @router.get("/me", response_model=UserOut)
-def get_me(request: Request, db: Session = Depends(get_db)):
-    current_user = get_current_user(request, db)
+def get_me(current_user = Depends(get_current_user)):
     return UserOut.model_validate(current_user)
 
 @router.post("/logout")

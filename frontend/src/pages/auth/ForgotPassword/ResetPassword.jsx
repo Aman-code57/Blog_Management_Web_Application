@@ -74,7 +74,7 @@ const ResetPassword = () => {
         return (
             <div style={{ margin: 0, fontFamily: 'Arial, sans-serif', background: '#f3f4f6', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
                 <div className="reset-password-form">
-                    <h2>Invalid Reset Link</h2>
+                    <h2>Invalid Reset Password</h2>
                     <p>{error}</p>
                     <button onClick={() => navigate('/forgot-password')}>Back to Forgot Password</button>
                 </div>

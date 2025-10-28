@@ -1,12 +1,11 @@
 .create-blog-container {
-  max-width: 400px;
+  max-width: 1500px;
   margin: 50px auto;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #f9f9f9;
   margin-top: 20px;
-  
 }
 
 .create-blog-container h2 {
@@ -16,11 +15,9 @@
 }
 
 .create-blog-container form {
-  display: flex;
-  flex-direction: column;
-  
+  display: block;              /* prevent flex jumping */
+  min-height: 400px;
 }
-
 
 .create-blog-container input[type="file"] {
   margin-bottom: 15px;
@@ -30,8 +27,7 @@
   font-size: 16px;
   background-color: white;
   color: black;
-  width: 90%;
-  
+  width: 97%;
 }
 
 .create-blog-container textarea {
@@ -47,25 +43,26 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  width: 10%;
+  margin-left: 1290px;
 }
 
 .create-blog-container button:hover {
   background-color: #218838;
 }
-
 .errorred {
-  color: red;
-  text-align: center;
+  display: block;
+  height: 20px;           
+  line-height: 20px;      
+  margin-bottom: 10px;
+  text-align: left;
   font-size: 13px;
-  height: 5px;           /* fixed height */
-  margin-top: -1px;
-  overflow: hidden;
-  visibility: hidden;
-  /* margin-top: -0px; */
+  color: transparent;    
+  transition: color 0.2s ease;
 }
 
 .errorred.visible {
-  visibility: visible;
+  color: red;            
 }
 
 form label {
@@ -74,19 +71,21 @@ form label {
   font-weight: bold;
   color: #333;
 }
-.main-contentss{
+
+.main-contentss {
   display: flex;
   flex: 1;
   overflow: hidden;
   width: 100%;
-  
 }
+
 .contented {
   flex: 1;
   padding: 10px;
   background-color: #fff;
 }
-.logout-btned{
+
+.logout-btned {
   background-color: #0056b3;
   border: none;
   color: white;
@@ -95,7 +94,8 @@ form label {
   cursor: pointer;
   margin-right: 10px;
 }
-.title{
+
+.title {
   margin-bottom: 15px;
   padding: 10px;
   border: 1px solid #ccc;
@@ -103,17 +103,17 @@ form label {
   font-size: 16px;
   background-color: white;
   color: black;
-  width: 90%;
+  width: 97%;
 }
-.description{
+
+.description {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
   background-color: white;
   color: black;
-  width: 90%;
+  width: 97%;
   height: 18px;
   margin-top: 20px;
 }
-

@@ -117,12 +117,6 @@
   color: black;
 
 }
-/* .back-btns{
-  background-color: #007bff;;
-  color: white;
-  margin-right: 10px;
-  margin-top: 2px;
-} */
 
 .footer {
   background-color: #007bff;
@@ -211,20 +205,50 @@ small{
 }
 
 .comment-container {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  position: relative;
+  margin-bottom: 16px;
+  padding-left: 0;
 }
 
 .comment-main {
-  flex: 1;
+  position: relative;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  margin-bottom: 8px;
 }
 
 .replies {
-  flex: 1;
-  margin-left: 20px;
-  border-left: 2px solid #ccc;
-  padding-left: 10px;
+  position: relative;
+  margin-left: 48px;
+  padding-left: 16px;
+  border-left: 2px solid #0073b1;
+}
+
+.replies::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-color: #0073b1;
+}
+
+.replies .comment-main {
+  background-color: #f8f9fa;
+  border-color: #d1d5db;
+}
+
+.replies .replies .comment-main {
+  background-color: #f1f3f4;
+  border-color: #c7c9cc;
+}
+
+.replies .replies .replies .comment-main {
+  background-color: #e8eaed;
+  border-color: #bdc1c6;
 }
 
 .show-replies-btn {

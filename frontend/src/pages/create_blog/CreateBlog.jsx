@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
 import { toast } from "react-toastify";
@@ -20,6 +20,8 @@ function CreateBlog() {
   const [creating, setCreating] = useState(false);
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
+  const titleRef = useRef(null);
+  const contentRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,11 +43,18 @@ function CreateBlog() {
       setContentError("Content is required");
       hasError = true;
     } else if (content.length > 1000) {
-      setContentError("Content must be up to 200 characters");
+      setContentError("Content must be up to 1000 characters");
       hasError = true;
     }
 
-    if (hasError) return;
+    if (hasError) {
+      if (!title.trim() || (title.length < 3 || title.length > 60)) {
+        titleRef.current.focus();
+      } else if (!content.trim() || content.length > 1000) {
+        contentRef.current.focus();
+      }
+      return;
+    }
 
     setCreating(true);
     const formData = new FormData();
@@ -108,6 +117,26 @@ function CreateBlog() {
     }
   };
 
+  const validateTitle = () => {
+    if (!title.trim()) {
+      setTitleError("Title is required");
+    } else if (title.length < 3 || title.length > 60) {
+      setTitleError("Title must be between 3 and 60 characters");
+    } else {
+      setTitleError("");
+    }
+  };
+
+  const validateContent = () => {
+    if (!content.trim()) {
+      setContentError("Content is required");
+    } else if (content.length > 1000) {
+      setContentError("Content must be up to 1000 characters");
+    } else {
+      setContentError("");
+    }
+  };
+
   return (
     <div className="layout-container-create">
       <nav className="navbar">
@@ -131,11 +160,11 @@ function CreateBlog() {
             <h2>Create New Blog</h2>
             <form onSubmit={handleSubmit}>
               <div>
-                <input type="text" className="title" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength="60" />
+                <input ref={titleRef} type="text" className="title" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} onBlur={validateTitle} maxLength="60" />
                 <span className={`errorred ${titleError ? 'visible' : ''}`}>{titleError || ' '}</span>
               </div>
               <div>
-                <textarea type="description" className="description" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} maxLength="1000" />
+                <textarea ref={contentRef} type="text" className="description" placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} onBlur={validateContent} maxLength="1000" />
                 <span className={`errorred ${contentError ? 'visible' : ''}`}>{contentError || ' '}</span>
               </div>
 
